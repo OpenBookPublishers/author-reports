@@ -116,12 +116,95 @@ class Book extends Model
     }
 
     /**
+     * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)totalRevenue].
+     *
+     * @return array
+     */
+    private function getTotalRevenueByYear()
+    {
+        $revenue = [];
+        foreach ($this->years_active as $y) {
+            if (!isset($revenue[$y])) {
+                $revenue[$y] = 0.00;
+            }
+            
+            $total = $this->getTotalRevenue($y);
+            $revenue[$y] += $total;
+        }
+        
+        return $revenue;
+    }
+
+    /**
+     * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)Income].
+     *
+     * @return array
+     */
+    private function getNonSalesIncomeByYear()
+    {
+        $revenue = [];
+        foreach ($this->years_active as $y) {
+            if (!isset($revenue[$y])) {
+                $revenue[$y] = 0.00;
+            }
+            
+            $total = $this->getNonSalesIncome($y);
+            $revenue[$y] += $total;
+        }
+        
+        return $revenue;
+    }
+
+    /**
+     * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)Costs].
+     *
+     * @return array
+     */
+    private function getNonSalesCostsByYear()
+    {
+        $revenue = [];
+        foreach ($this->years_active as $y) {
+            if (!isset($revenue[$y])) {
+                $revenue[$y] = 0.00;
+            }
+            
+            $total = $this->getNonSalesCosts($y);
+            $revenue[$y] += $total;
+        }
+        
+        return $revenue;
+    }
+
+    /**
      * Obtain the total net revenue for this book in a given year.
      *
      * @param int $year
      * @return float
      */
     private function getTotalNetRevenue($year)
+    {
+        $result =  DB::table('sale')
+            ->join('volume', 'sale.volume_id', '=', 'volume.volume_id')
+            ->join('book', 'volume.book_id', '=', 'book.book_id')
+            ->select(DB::raw('SUM(`net_revenue`) as total'))
+            ->whereYear('sale_date', $year)
+            ->where('doi', '=', $this->doi)
+            ->first();
+
+        return $result->total !== null ? (float) $result->total : 0.00;
+
+    }
+
+    /**
+     * Obtain the total sales revenue for this book in a given year.
+     *
+     * @param int $year
+     * @return float
+     */
+    private function getTotalRevenue($year)
     {
         $result =  DB::table('sale')
             ->join('volume', 'sale.volume_id', '=', 'volume.volume_id')
@@ -144,12 +227,49 @@ class Book extends Model
      */
     private function getNonSalesIncome($year)
     {
+        return $this->getSubventions("income", $year);
+
+    }
+
+    /**
+     * Obtain the total extra income (not obtained from sales)
+     * for this book in a given year.
+     *
+     * @param int $year
+     * @return float
+     */
+    private function getNonSalesCosts($year)
+    {
+        return $this->getSubventions("cost", $year);
+
+    }
+
+    /**
+     * Obtain the total positive or negative subventions 
+     * for this book in a given year.
+     *
+     * @param string $type
+     * @param int $year
+     * @return float
+     */
+    private function getSubventions($type, $year)
+    {
+        switch ($type) {
+            case "cost":
+                $symbol = "<";
+                break;
+            default:
+            case "income":
+                $symbol = ">";
+                break;
+        }
+ 
         $result =  DB::table('subvention')
             ->join('book', 'book.book_id', '=', 'subvention.book_id')
             ->select(DB::raw('SUM(`subvention_value`) as total'))
             ->whereYear('subvention_date', $year)
             ->where([
-                ['subvention_value', '>', 0],
+                ['subvention_value', $symbol, 0],
                 ['doi', '=', $this->doi]])
             ->first();
         
@@ -220,5 +340,45 @@ class Book extends Model
             ->first();
         
         return $result->readership !== null ? $result->readership : 0;
+    }
+
+    /**
+     * Obtain the total this books sales in a given year for a particular
+     * book format (e.g. epub, hardback, pdf)
+     *
+     * @param string $format
+     * @param int $year
+     * @return int
+     */
+    private function getTotalSalesFormatYear($format, $year)
+    {
+        $result = DB::table('sale')
+            ->join('volume','sale.volume_id', '=', 'volume.volume_id')
+            ->join('book','volume.book_id', '=', 'book.book_id')
+            ->select( DB::raw('SUM(`sales_units`) as sales'))
+            ->whereYear('sale_date', $year)
+            ->where([['doi', '=', $this->doi], ['format_name', '=', $format]])
+            ->first();
+        
+        return $result->sales !== null ? $result->sales : 0;
+    }
+
+    /**
+     * Obtain the total this books sales in a given year
+     *
+     * @param int $year
+     * @return int
+     */
+    private function getTotalSalesByYear($year)
+    {
+        $result = DB::table('sale')
+            ->join('volume','sale.volume_id', '=', 'volume.volume_id')
+            ->join('book','volume.book_id', '=', 'book.book_id')
+            ->select( DB::raw('SUM(`sales_units`) as sales'))
+            ->whereYear('sale_date', $year)
+            ->where('doi', '=', $this->doi)
+            ->first();
+        
+        return $result->sales !== null ? $result->sales : 0;
     }
 }
