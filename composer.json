@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
+    "name": "openbookpublishers/author-reports",
+    "description": "Laravel based framework for author reports.",
+    "keywords": ["publishing", "authors", "reporting"],
+    "license": "GPL-3.0",
     "type": "project",
     "require": {
         "php": ">=5.6.4",
