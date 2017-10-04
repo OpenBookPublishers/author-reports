@@ -75,7 +75,12 @@ class Book extends Model
     {
         return $this->hasMany('App\RoyaltyAgreement');
     }
-    
+
+    /**
+     * Get the list of years since publication of this book.
+     *
+     * @return array
+     */
     private function getYearsActive()
     {
         $years = [];
@@ -83,15 +88,18 @@ class Book extends Model
         $min_year = date("Y", strtotime($this->publication_date));
         
         for ($y = $min_year; $y <= $max_year; $y++) {
-            if ($y === 2017) {
-                continue;
-            }
             $years[] = $y;
         }
         
         return $years;
     }
-    
+
+    /**
+     * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)NetRevenue].
+     *
+     * @return array
+     */
     private function getTotalNetRevenueByYear()
     {
         $revenue = [];
@@ -106,7 +114,13 @@ class Book extends Model
         
         return $revenue;
     }
-    
+
+    /**
+     * Obtain the total net revenue for this book in a given year.
+     *
+     * @param int $year
+     * @return float
+     */
     private function getTotalNetRevenue($year)
     {
         $result =  DB::table('sale')
@@ -120,7 +134,14 @@ class Book extends Model
         return $result->total !== null ? (float) $result->total : 0.00;
 
     }
-    
+
+    /**
+     * Obtain the total extra income (not obtained from sales)
+     * for this book in a given year.
+     *
+     * @param int $year
+     * @return float
+     */
     private function getNonSalesIncome($year)
     {
         $result =  DB::table('subvention')
@@ -153,7 +174,7 @@ class Book extends Model
             ->orderBy('readership')
             ->get();
     }
-    
+
     private function getReadershipPerContinent()
     {
         return DB::connection('mysql-stats')
@@ -171,7 +192,15 @@ class Book extends Model
             ->orderBy('readership')
             ->get();
     }
-    
+
+    /**
+     * Obtain the total readership of a particular measure in a given year
+     * for this book.
+     *
+     * @param string $measure
+     * @param int $year
+     * @return int
+     */
     private function getReadershipMeasureYear($measure, $year)
     {
         $result = DB::connection('mysql-stats')
