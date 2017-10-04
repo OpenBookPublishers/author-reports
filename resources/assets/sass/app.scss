@@ -1,0 +1,74 @@
+
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+
+// Variables
+@import "variables";
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.navbar-brand {
+    background-image: url("/pictures/logo.gif");
+    background-repeat: no-repeat;
+    display: block;
+    height: 65px;
+    width: 221px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.navbar-right {
+    margin-top: 16px;
+}
+
+.btn-large {
+    border-radius: 5px;
+    color: $brand-primary;
+    font-weight: bold;
+    display: inline-block;
+    line-height: 1.6;
+    margin-right: 20px;
+    margin-top: 20px;
+    outline: 0 none !important;
+    padding: 15px;
+    text-align: center;
+}
+
+.btn-large:hover {
+    color: darken($brand-primary, 20%);
+    transition: color 250ms linear 0s;
+    text-decoration: none !important;
+}
+
+.add-shadow {
+    box-shadow: 0 12px 25px 0 rgba(0, 0, 0, 0.45) !important;
+    outline: 0 none !important;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.square {
+    width: 20%;
+    height: 12vw;
+    min-width: 130px;
+    min-height: 130px;
+}
+
+.relative {
+    position: relative;
+}
+
+.centered {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+.fa.fa-large {
+    font-size: 9em;
+}
+
