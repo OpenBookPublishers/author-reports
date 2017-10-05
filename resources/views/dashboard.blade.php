@@ -21,7 +21,7 @@
                     <div class="panel-heading">{{ $book->title }}</div>
 
                     <div class="panel-body">
-                        
+
                         <a href="{{ route('dashboard',
                                     ['doi' => $book->book_id]) }}"
                            class="btn-large square relative">

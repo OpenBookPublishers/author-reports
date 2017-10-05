@@ -45,7 +45,7 @@
                                                value="false" autofocus>
                                         No
                                     </label>
-                                </div>  
+                                </div>
 
                                 @if ($errors->has('display_sales'))
                                     <span class="help-block">
