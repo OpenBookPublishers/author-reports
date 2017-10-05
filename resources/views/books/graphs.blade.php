@@ -23,7 +23,7 @@
         $class = "pie";
     }
     ?>
-    
+
     <div id="piece-{{ $piece }}" class="{{ $class }}" data-start="{{ $start }}"
          data-value="{{ $value }}">
     </div>
@@ -37,14 +37,14 @@
             -ms-transform: rotate({{ $start }}deg); /* IE */
             -webkit-transform: rotate({{ $start }}deg); /* Safari/Chrome */
             -o-transform: rotate({{ $start }}deg); /* Opera */
-            transform:rotate({{ $start }}deg);           
+            transform:rotate({{ $start }}deg);
         }
         .pie[data-value="{{ $value }}"]:before {
             -moz-transform: rotate({{ $value + 1 }}deg); /* Firefox */
             -ms-transform: rotate({{ $value + 1 }}deg); /* IE */
             -webkit-transform: rotate({{ $value + 1 }}deg); /* Safari/Chrome */
             -o-transform: rotate({{ $value + 1 }}deg); /* Opera */
-            transform:rotate({{ $value + 1 }}deg);   
+            transform:rotate({{ $value + 1 }}deg);
         }
     </style>
     <?php
