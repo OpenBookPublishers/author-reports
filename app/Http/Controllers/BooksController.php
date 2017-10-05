@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Book;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View;
 
 class BooksController extends Controller
 {
@@ -75,13 +78,19 @@ class BooksController extends Controller
     {
         $this->middleware('auth');
     }
- 
+
     public function index()
     {
         $books = Book::all();
         return view('books.index', compact('books'));
     }
 
+    /**
+     * Render a view with readership graphs
+     *
+     * @param type $book_id
+     * @return type
+     */
     public function readershipGraphs($book_id)
     {
         $book = Book::findOrFail($book_id);
@@ -99,11 +108,71 @@ class BooksController extends Controller
             compact('book', 'data', 'colours'));
     }
 
+    /**
+     * Render a view with an iframe to the readership map
+     *
+     * @param int $book_id
+     * @return Response
+     */
     public function readershipMap($book_id)
     {
         $book = Book::findOrFail($book_id);
         $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
         
         return view('books.map', compact('book', 'map_url'));
+    }
+
+    /**
+     * Generate the report in HTML
+     *
+     * @param int $book_id
+     * @return Illuminate\Support\Facades\View
+     */
+    public function fullReport($book_id)
+    {
+        $book = Book::findOrFail($book_id);
+        return View::make('books.report', ['book' => $book]);
+    }
+
+    /**
+     * Renders the report in PDF and returns it as a string
+     *
+     * @param int $book_id
+     * @return string
+     */
+    public function fullReportPdf($book_id)
+    {
+        if (! defined('DOMPDF_ENABLE_AUTOLOAD')) {
+            define('DOMPDF_ENABLE_AUTOLOAD', false);
+        }
+
+        if (file_exists($configPath = base_path()
+                . '/vendor/dompdf/dompdf/dompdf_config.inc.php')) {
+            require_once $configPath;
+        }
+
+        $dompdf = new Dompdf;
+        $dompdf->loadHtml($this->fullReport($book_id)->render());
+        $dompdf->render();
+        return $dompdf->output();
+    }
+
+    /**
+     * Generates the report and outputs it as a PDF
+     *
+     * @param int $book_id
+     * @return Response
+     */
+    public function downloadFullReport($book_id)
+    {
+        $book = Book::findOrFail($book_id);
+        $filename = $book->book_id . '.pdf';
+        
+        return new Response($this->fullReportPdf($book_id), 200, [
+            'Content-Description' => 'File Transfer',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            'Content-Transfer-Encoding' => 'binary',
+            'Content-Type' => 'application/pdf',
+        ]);   
     }
 }

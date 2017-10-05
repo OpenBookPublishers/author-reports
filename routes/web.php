@@ -13,6 +13,8 @@
 
 Route::get('/', 'DashboardController@index');
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/book/report/pdf/{book_id}', 'BooksController@downloadFullReport')
+       ->name('download-report');
 Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
        ->name('graphs');
 Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')

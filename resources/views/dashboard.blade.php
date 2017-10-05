@@ -22,8 +22,8 @@
 
                     <div class="panel-body">
 
-                        <a href="{{ route('dashboard',
-                                    ['doi' => $book->book_id]) }}"
+                        <a href="{{ route('download-report',
+                                    ['book_id' => $book->book_id]) }}"
                            class="btn-large square relative">
                             <div class="centered full-width">
                                 <i class="fa fa-file-pdf-o fa-large"
