@@ -10,7 +10,6 @@ class Book extends Model
 
     public $table = "book";
     public $primaryKey = "book_id";
-    public $years_active;
 
     private $stats_measures_aliases = [
         "(Grokstat) Daily Views" => "Wikimedia",
@@ -28,11 +27,69 @@ class Book extends Model
         "(DownloadLogs) Downloads" => "OBP Website",
         "(SalesCSVDownloads) Downloads" => "Retail Distributors"
     ];
-    
-    public function __construct()
+
+    public function loadAllData()
     {
-        Parent::__construct();
         $this->years_active = $this->getYearsActive();
+        $this->loadCountryReadership();
+        $this->loadContinentReadership();
+        $this->loadReadership();
+        $this->loadSales();
+        $this->loadDownloads();
+    }
+
+    public function loadReadership()
+    {
+        $this->readership = $this->getStats("readership");
+    }
+
+    public function loadSales()
+    {
+        $this->sales = $this->getStats("sales");
+    }
+
+    public function loadDownloads()
+    {
+        $this->downloads = $this->getStats("downloads");
+    }
+
+    /**
+     * Load the countries array
+     */
+    public function loadCountryReadership()
+    {
+        $countries  = [];
+        $data = $this->getReadershipPerCountry();
+        $count = count($data) - 1;
+        $total = 0;
+        $other = 0;
+
+        foreach ($data as $key => $result) {
+            if ($key <= $count - 10) {
+                $other += $result->readership;
+            } else {
+                $countries[$result->country_name] = $result->readership;
+            }
+            $total += $result->readership;
+        }
+        $countries['Other'] = $other;
+        asort($countries);
+        $this->countries = $countries;
+        $this->total_country_readership = $total;
+        $this->total_countries = count($data);
+    }
+
+    /**
+     * Load the continents array
+     */
+    public function loadContinentReadership()
+    {
+        $continents = [];
+        $data = $this->getReadershipPerContinent();
+        foreach ($data as $result) {
+            $continents[$result->continent_code] = $result->readership;
+        }
+        $this->continents = $continents;
     }
 
     /**
@@ -53,7 +110,7 @@ class Book extends Model
      */
     public function volumes()
     {
-        return $this->hasMany('App\Volume');
+        return $this->hasMany('App\Volume', 'book_id');
     }
 
     /**
@@ -77,6 +134,16 @@ class Book extends Model
     }
 
     /**
+     * Determine if this book has any royalties
+     *
+     * @return boolean
+     */
+    public function hasRoyalty()
+    {
+        return $this->royaltyAgreements->count() > 0;
+    }
+
+    /**
      * Get the list of years since publication of this book.
      *
      * @return array
@@ -92,6 +159,75 @@ class Book extends Model
         }
         
         return $years;
+    }
+
+    /**
+     * Get the list of formats that this book is available in.
+     *
+     * @return array
+     */
+    private function getFormats()
+    {
+        $formats = [];
+        foreach ($this->volumes as $volume) {
+            $formats[] = $volume->format_name;
+        }
+        
+        return $formats;
+    }
+
+    private function getMeasures($type)
+    {
+        switch ($type) {
+            case "readership": return $this->stats_measures_aliases;
+            case "downloads":  return $this->downloads_measures_aliases;
+            case "sales":      return $this->getFormats();
+        }
+    }
+
+    private function getMeasurement($type, $measure, $alias, $year)
+    {
+        switch ($type) {
+            case "readership":
+            case "downloads":
+                return $this->getReadershipMeasureYear($measure, $year);
+            case "sales":
+                return $this->getSalesFormatYear($alias, $year);
+       }
+    }
+
+    private function getStats($type)
+    {
+        $stats = [];
+        $measures = $this->getMeasures($type);
+
+        foreach ($measures as $measure => $alias) {
+            if (!isset($stats[$alias])) {
+                $stats[$alias] = [];
+            }
+
+            foreach ($this->years_active as $y) {
+                if (!isset($stats[$alias][$y])) {
+                    $stats[$alias][$y] = 0;
+                }
+
+                $units = $this->getMeasurement($type, $measure, $alias, $y);
+                $stats[$alias][$y] += $units;
+            }
+
+            // clean up
+            $cleanup = true;
+            foreach ($stats[$alias] as $year => $val) {
+                if ($val !== 0) {
+                    $cleanup = false;
+                    break;
+                 }
+            }
+            if ($cleanup) {
+                unset($stats[$alias]);
+            }
+        }
+        return $stats;
     }
 
     /**
@@ -292,7 +428,8 @@ class Book extends Model
                 ['country_name', '<>', "(not set)"]])
             ->groupBy('country_name')
             ->orderBy('readership')
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     private function getReadershipPerContinent()
@@ -310,7 +447,8 @@ class Book extends Model
                 ['continent_code', '<>', "--"]])
             ->groupBy('continent_code')
             ->orderBy('readership')
-            ->get();
+            ->get()
+            ->toArray();
     }
 
     /**
@@ -343,14 +481,14 @@ class Book extends Model
     }
 
     /**
-     * Obtain the total this books sales in a given year for a particular
+     * Obtain the total sales of this book in a given year for a particular
      * book format (e.g. epub, hardback, pdf)
      *
      * @param string $format
      * @param int $year
      * @return int
      */
-    private function getTotalSalesFormatYear($format, $year)
+    private function getSalesFormatYear($format, $year)
     {
         $result = DB::table('sale')
             ->join('volume','sale.volume_id', '=', 'volume.volume_id')

@@ -72,3 +72,42 @@
     font-size: 9em;
 }
 
+#header-table {
+  width: 100%;
+}
+
+.line-break {
+  margin-top: 2em;
+}
+
+.line-break.double {
+  margin-top: 4em;
+}
+
+.right {
+  text-align: right;
+}
+
+.report-table {
+  width: 80%;
+  border-collapse: collapse;
+}
+
+.section-header {
+  text-align: center;
+  font-weight: bold;
+}
+
+td.border {
+  border-bottom: 1px solid black;
+  text-align: right;
+}
+
+td.result {
+  border-top: 3px double black;
+  text-align: right;
+}
+
+td.platform {
+  width: 30%;
+}
