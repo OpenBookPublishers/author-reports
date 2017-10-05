@@ -16,35 +16,52 @@
     @foreach (Auth::user()->author->books as $book)
     <div class="container">
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-heading">{{ $book->title }}</div>
 
                     <div class="panel-body">
                         
-                        <a href="{{ route('home', ['doi' => $book->doi]) }}"
+                        <a href="{{ route('dashboard',
+                                    ['doi' => $book->book_id]) }}"
                            class="btn-large square relative">
                             <div class="centered full-width">
                                 <i class="fa fa-file-pdf-o fa-large"
                                    aria-hidden="true"></i>
+                                <br>
                                 <span class="full-width">
-                                    Report
+                                    Full Report
                                 </span>
                             </div>
                         </a>
-                        
-                        <a href="https://data.openbookpublishers.com/static/map/book-countries.html?doi={{ $book->doi }}"
+
+                        <a href="{{ route('graphs',
+                                    ['book_id' => $book->book_id]) }}"
+                           class="btn-large square relative">
+                            <div class="centered full-width">
+                                <i class="fa fa-pie-chart fa-large"
+                                   aria-hidden="true"></i>
+                                <br>
+                                <span class="full-width">
+                                    Readership Graphs
+                                </span>
+                            </div>
+                        </a>
+
+                        <a href="{{ route('map',
+                                    ['book_id' => $book->book_id]) }}"
                            target="_blank"
                            class="btn-large square relative">
                             <div class="centered full-width">
                                 <i class="fa fa-globe fa-large"
                                    aria-hidden="true"></i>
+                                <br>
                                 <span class="full-width">
                                     Readership Map
                                 </span>
                             </div>
                         </a>
-                        
+
                     </div>
                 </div>
             </div>

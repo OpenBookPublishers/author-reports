@@ -1,0 +1,107 @@
+/*
+  make each pie piece a rectangle twice as high as it is wide.
+  move the transform origin to the middle of the left side.
+  Also ensure that overflow is set to hidden.
+*/
+  .pie {
+    position:absolute;
+    width:80px;
+    height:160px;
+    overflow:hidden;
+    left:80px;
+    -moz-transform-origin:left center;
+    -ms-transform-origin:left center;
+    -o-transform-origin:left center;
+    -webkit-transform-origin:left center;
+    transform-origin:left center;
+  }
+/*
+  unless the piece represents more than 50% of the whole chart.
+  then make it a square, and ensure the transform origin is
+  back in the center.
+
+  NOTE: since this is only ever a single piece, you could
+  move this to a piece specific rule and remove the extra class
+*/
+  .pie.big {
+    width:160px;
+    height:160px;
+    left:0px;
+    -moz-transform-origin:center center;
+    -ms-transform-origin:center center;
+    -o-transform-origin:center center;
+    -webkit-transform-origin:center center;
+    transform-origin:center center;
+  }
+/*
+  this is the actual visible part of the pie.
+  Give it the same dimensions as the regular piece.
+  Use border radius make it a half circle.
+  move transform origin to the middle of the right side.
+  Push it out to the left of the containing box.
+*/
+  .pie:before {
+    content:"";
+    position:absolute;
+    width:80px;
+    height:160px;
+    left:-80px;
+    border-radius:100px 0 0 100px;
+    -moz-transform-origin:right center;
+    -ms-transform-origin:right center;
+    -o-transform-origin:right center;
+    -webkit-transform-origin:right center;
+    transform-origin:right center;
+  }
+ /* if it's part of a big piece, bring it back into the square */
+  .pie.big:before {
+    left:0px;
+  }
+/*
+  big pieces will also need a second semicircle, pointed in the
+  opposite direction to hide the first part behind.
+*/
+  .pie.big:after {
+    content:"";
+    position:absolute;
+    width:80px;
+    height:160px;
+    left:80px;
+    border-radius:0 100px 100px 0;
+  }
+
+  #legend {
+    position: absolute;
+    left: 170px;
+    font-size: 13px !important;
+    font-family: "Times New Roman", arial, Verdana !important;
+    border: 1px solid grey;
+    padding: 2px;
+  }
+
+  #legend tr:nth-child(1) {
+    font-weight: bold;
+  }
+
+  #legend td {
+    padding-right: 10px;
+  }
+
+  .legend-label {
+    display: block;
+    width: 8px;
+    height: 8px;
+  }
+
+  .graph-wrap {
+    position: relative;
+    float: left;
+  }
+
+  .graph-wrap-right {
+    margin-left: 17%;
+  }
+
+  .graph-wrap:nth-of-type(even) {
+    margin-left: 17%;
+  }

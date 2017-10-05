@@ -6,8 +6,9 @@ use App\BookReport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class HomeController extends Controller
+class DashboardController extends Controller
 {
+
     /**
      * Create a new controller instance.
      *
@@ -25,9 +26,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        //$book = \App\Book::findOrFail(1);
-        //dd($book->getTotalNetRevenue(2015));
-        return view('home');
+        return view('dashboard');
     }
 
     /**
@@ -71,7 +70,7 @@ class HomeController extends Controller
                 'Sorry. There was a problem.');
         }
         
-        return view('home');
+        return view('dashboard');
     }
     
     public function report($doi)

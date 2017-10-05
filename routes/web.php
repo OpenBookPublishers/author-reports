@@ -11,11 +11,14 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
-Route::get('books', 'BooksController@index');
-Route::get('authors', 'AuthorsController@index');
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'DashboardController@index');
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
+       ->name('graphs');
+Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')
+       ->name('map');
 
-Route::post('/user/information/update', 'HomeController@updateInfo')->name('update-info');
+Route::post('/user/information/update', 'HomeController@updateInfo')
+       ->name('update-info');
 
 Auth::routes();
