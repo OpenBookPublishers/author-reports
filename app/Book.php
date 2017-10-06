@@ -144,6 +144,17 @@ class Book extends Model
     }
 
     /**
+     * Determine if this book has been published
+     *
+     * @return boolean
+     */
+    public function isPublished()
+    {
+        return $this->publication_date !== null
+          && date("Y-m-d", strtotime($this->publication_date)) <= date("Y-m-d");
+    }
+
+    /**
      * Get the list of years since publication of this book.
      *
      * @return array

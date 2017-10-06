@@ -6,6 +6,8 @@
 
                     <div class="panel-body">
 
+                        @if ($book->isPublished())
+
                         <a href="{{ route('report',
                                     ['book_id' => $book->book_id]) }}"
                            class="btn-large square relative">
@@ -58,6 +60,12 @@
                                 </span>
                             </div>
                         </a>
+                        
+                        @else
+                        <p>
+                            Upon publication of your book, you will be able to access readership, downloads, and sales reports via this interface.
+                        </p>
+                        @endif
 
                     </div>
                 </div>
