@@ -88,6 +88,11 @@ class BooksController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Render an interface to manage books
+     *
+     * @return Response
+     */
     public function index()
     {
         $books = Book::all();
