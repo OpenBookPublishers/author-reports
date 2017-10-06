@@ -1,14 +1,11 @@
-<!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+    .report-wrapper {
+        font-family: "Times New Roman", arial, Verdana;
+    }
+</style>
 
-    <title>{{ $book->title }}</title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="report-wrapper">
+    @foreach ($data as $table)
+        @include('books.table')
+    @endforeach
+</div>

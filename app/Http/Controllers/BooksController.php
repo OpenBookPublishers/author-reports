@@ -17,25 +17,33 @@ class BooksController extends Controller
             "title" => "Online Readership",
             "column" => "Platform",
             "totals_col" => "Total Online Reader",
-            "data" => []
+            "data" => [],
+            "year_totals" => [],
+            "global_total" => 0
          ],
          "downloads" => [
             "title" => "Free Downloads",
             "column" => "Platform",
             "totals_col" => "Total eBook Downloads",
-            "data" => []
+            "data" => [],
+            "year_totals" => [],
+            "global_total" => 0
          ],
          "sales" => [
             "title" => "Number of Sales",
             "column" => "Format",
             "totals_col" => "Total Sales",
-            "data" => []
+            "data" => [],
+            "year_totals" => [],
+            "global_total" => 0
          ],
          "royalties" => [
             "title" => "Revenue and Royalties Summary (GBP)",
             "column" => "",
             "totals_col" => "",
-            "data" => []
+            "data" => [],
+            "year_totals" => [],
+            "global_total" => 0
          ]
     ];
     private $graph_data = [
@@ -146,8 +154,14 @@ class BooksController extends Controller
             Session::flash('info', $book->getNotPublishedMessage());
             return back();
         }
-        
-        return view('books.report-headers', ['book' => $book]);
+
+        $book->loadAllData();
+        $this->table_data['readership']['data'] = $book->readership;
+        $this->table_data['downloads']['data'] = $book->downloads;
+        $this->table_data['sales']['data'] = $book->sales;
+        $data = $this->table_data;
+
+        return view('books.report-headers', compact('book', 'data'));
     }
 
     /**
@@ -159,7 +173,14 @@ class BooksController extends Controller
     public function fullReport($book_id)
     {
         $book = Book::findOrFail($book_id);
-        return View::make('books.report', ['book' => $book]);
+
+        $book->loadAllData();
+        $this->table_data['readership']['data'] = $book->readership;
+        $this->table_data['downloads']['data'] = $book->downloads;
+        $this->table_data['sales']['data'] = $book->sales;
+        $data = $this->table_data;
+        
+        return View::make('books.report-html', compact('book', 'data'));
     }
 
     /**
@@ -171,6 +192,7 @@ class BooksController extends Controller
     public function fullReportPdf($book_id)
     {
         $dompdf = new Dompdf;
+        //$dompdf->set_base_path();
         $dompdf->loadHtml($this->fullReport($book_id)->render());
         $dompdf->render();
         return $dompdf->output();

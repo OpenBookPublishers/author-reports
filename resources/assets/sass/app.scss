@@ -88,26 +88,19 @@
   text-align: right;
 }
 
-.report-table {
-  width: 80%;
-  border-collapse: collapse;
-}
-
 .section-header {
   text-align: center;
   font-weight: bold;
 }
 
 td.border {
-  border-bottom: 1px solid black;
-  text-align: right;
+  border-bottom: 1px solid black !important;
 }
 
 td.result {
-  border-top: 3px double black;
-  text-align: right;
+  border-top: 3px double black !important;
 }
 
 td.platform {
-  width: 30%;
+  width: 20%;
 }

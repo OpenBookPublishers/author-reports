@@ -8,7 +8,7 @@
                 <div class="panel-heading">Information</div>
 
                 <div class="panel-body">
-                    
+
                     <form class="form-horizontal" method="POST"
                           action="{{ route('update-info') }}">
                         {{ csrf_field() }}
@@ -108,7 +108,7 @@
                                         </strong>
                                     </span>
                                 @endif
-                                
+
                             </div>
                             <div class="col-md-2" style="padding-top: 7px;">
                                 <a class="btn-link" target="_blank"
