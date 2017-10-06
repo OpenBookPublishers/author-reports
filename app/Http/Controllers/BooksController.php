@@ -142,15 +142,6 @@ class BooksController extends Controller
      */
     public function fullReportPdf($book_id)
     {
-        if (! defined('DOMPDF_ENABLE_AUTOLOAD')) {
-            define('DOMPDF_ENABLE_AUTOLOAD', false);
-        }
-
-        if (file_exists($configPath = base_path()
-                . '/vendor/dompdf/dompdf/dompdf_config.inc.php')) {
-            require_once $configPath;
-        }
-
         $dompdf = new Dompdf;
         $dompdf->loadHtml($this->fullReport($book_id)->render());
         $dompdf->render();
