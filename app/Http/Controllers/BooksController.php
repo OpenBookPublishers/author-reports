@@ -128,6 +128,18 @@ class BooksController extends Controller
      * @param int $book_id
      * @return Illuminate\Support\Facades\View
      */
+    public function fullReportHtml($book_id)
+    {
+        $book = Book::findOrFail($book_id);
+        return view('books.report-headers', ['book' => $book]);
+    }
+
+    /**
+     * Generate the report in HTML
+     *
+     * @param int $book_id
+     * @return Illuminate\Support\Facades\View
+     */
     public function fullReport($book_id)
     {
         $book = Book::findOrFail($book_id);

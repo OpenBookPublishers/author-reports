@@ -6,6 +6,19 @@
 
                     <div class="panel-body">
 
+                        <a href="{{ route('report',
+                                    ['book_id' => $book->book_id]) }}"
+                           class="btn-large square relative">
+                            <div class="centered full-width">
+                                <i class="fa fa-file-text-o fa-large"
+                                   aria-hidden="true"></i>
+                                <br>
+                                <span class="full-width">
+                                    Metrics Report
+                                </span>
+                            </div>
+                        </a>
+
                         <a href="{{ route('download-report',
                                     ['book_id' => $book->book_id]) }}"
                            class="btn-large square relative">
@@ -14,7 +27,7 @@
                                    aria-hidden="true"></i>
                                 <br>
                                 <span class="full-width">
-                                    Full Report
+                                    Metrics Report (PDF)
                                 </span>
                             </div>
                         </a>
@@ -23,7 +36,7 @@
                                     ['book_id' => $book->book_id]) }}"
                            class="btn-large square relative">
                             <div class="centered full-width">
-                                <i class="fa fa-pie-chart fa-large"
+                                <i class="fa fa-bar-chart fa-large"
                                    aria-hidden="true"></i>
                                 <br>
                                 <span class="full-width">
