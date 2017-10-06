@@ -60,7 +60,7 @@
                                 </span>
                             </div>
                         </a>
-                        
+
                         @else
                         <p>
                             Upon publication of your book, you will be able to access readership, downloads, and sales reports via this interface.

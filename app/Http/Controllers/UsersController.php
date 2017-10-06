@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Author;
+use App\User;
 use Illuminate\Http\Request;
 
-class AuthorsController extends Controller
+class UsersController extends Controller
 {
 
     /**
@@ -18,9 +18,14 @@ class AuthorsController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Render an interface to manage users
+     *
+     * @return Response
+     */
     public function index()
     {
-        $authors = Author::all();
-        return view('authors.index', compact('authors'));
+        $users = User::all();
+        return view('users.index', compact('users'));
     }
 }
