@@ -98,7 +98,7 @@ class BooksController extends Controller
      * Render a view with readership graphs
      *
      * @param type $book_id
-     * @return type
+     * @return Response
      */
     public function readershipGraphs($book_id)
     {
