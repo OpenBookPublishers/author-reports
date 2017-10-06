@@ -32,13 +32,14 @@ class DashboardController extends Controller
     /**
      * Save user information.
      *
+     * @todo Remove conversion of display_sales to integer
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function updateInfo(Request $request)
     {
         $this->validate($request, [
-            'display_sales' => 'required|boolean',
+            'display_sales' => 'required',
             'orcid' => 'nullable|min:20|max:40',
             'twitter' => 'nullable',
             'repositories' => 'nullable:'
@@ -47,7 +48,9 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         if ($request->display_sales) {
-            $user->display_sales = $request->display_sales;
+            // FIXME mysql lacks boolean values;
+            // remove conversion below when using postgres
+            $user->display_sales = (int) $request->display_sales;
         }
         
         if ($request->orcid) {
