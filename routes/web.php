@@ -20,7 +20,7 @@ Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
 Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')
        ->name('map');
 
-Route::post('/user/information/update', 'HomeController@updateInfo')
+Route::post('/user/information/update', 'DashboardController@updateInfo')
        ->name('update-info');
 
 Auth::routes();
