@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'DashboardController@index');
+Route::get('/', function() {return Redirect::to('dashboard');});
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
 Route::get('/book/report/pdf/{book_id}', 'BooksController@downloadFullReport')
        ->name('download-report');
