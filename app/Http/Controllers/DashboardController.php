@@ -25,7 +25,7 @@ class DashboardController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {            $request->session()->flash('status', 'test');
+    {
         return view('dashboard');
     }
 
@@ -50,7 +50,7 @@ class DashboardController extends Controller
         if ($request->display_sales) {
             // FIXME mysql lacks boolean values;
             // remove conversion below when using postgres
-            $user->display_sales = (int) $request->display_sales;
+            $user->display_sales = $request->display_sales === "true" ? 1 : 0;
         }
         
         if ($request->orcid) {
