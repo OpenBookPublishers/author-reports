@@ -7,6 +7,7 @@ use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Session;
 
 class BooksController extends Controller
 {
@@ -94,6 +95,11 @@ class BooksController extends Controller
     public function readershipGraphs($book_id)
     {
         $book = Book::findOrFail($book_id);
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }        
+
         $book->loadCountryReadership();
         $book->loadContinentReadership();
         $this->graph_data['countries']['data'] = $book->countries;
@@ -117,6 +123,11 @@ class BooksController extends Controller
     public function readershipMap($book_id)
     {
         $book = Book::findOrFail($book_id);
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }
+
         $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
         
         return view('books.map', compact('book', 'map_url'));
@@ -131,6 +142,11 @@ class BooksController extends Controller
     public function fullReportHtml($book_id)
     {
         $book = Book::findOrFail($book_id);
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }
+        
         return view('books.report-headers', ['book' => $book]);
     }
 
@@ -169,6 +185,11 @@ class BooksController extends Controller
     public function downloadFullReport($book_id)
     {
         $book = Book::findOrFail($book_id);
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }
+
         $filename = $book->book_id . '.pdf';
         
         return new Response($this->fullReportPdf($book_id), 200, [

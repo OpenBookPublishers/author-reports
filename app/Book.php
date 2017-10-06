@@ -155,6 +155,16 @@ class Book extends Model
     }
 
     /**
+     * Generate a message to indicate that a book has not been published yet.
+     *
+     * @return string
+     */
+    public function getNotPublishedMessage()
+    {
+        return $this->title . " has not been published.";
+    }
+
+    /**
      * Get the list of years since publication of this book.
      *
      * @return array

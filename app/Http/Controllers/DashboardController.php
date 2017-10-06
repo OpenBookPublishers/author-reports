@@ -66,7 +66,7 @@ class DashboardController extends Controller
         }
         
         if ($user->save()) {
-            $request->session()->flash('status',
+            $request->session()->flash('success',
                 'Thank you. Your information has been saved.');
         } else {
             $request->session()->flash('error',
