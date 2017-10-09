@@ -60,4 +60,15 @@ class User extends Authenticatable
     {
         return $this->admin ? true : false;
     }
+
+    /**
+     * Check if the user can read royalty information for a given book
+     *
+     * @param int $book_id
+     * @return boolean
+     */
+    public function hasAccessToRoyaltyOfBook($book_id)
+    {
+        return $this->isAdmin() || $this->author->hasRoyaltyOfBook($book_id);
+    }
 }
