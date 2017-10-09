@@ -67,6 +67,18 @@ class User extends Authenticatable
      * @param int $book_id
      * @return boolean
      */
+    public function hasAccessToSalesOfBook($book_id)
+    {
+        return $this->isAdmin()
+            || $this->author->isContributorOfBook($book_id);
+    }
+
+    /**
+     * Check if the user can read royalty information for a given book
+     *
+     * @param int $book_id
+     * @return boolean
+     */
     public function hasAccessToRoyaltyOfBook($book_id)
     {
         return $this->isAdmin() || $this->author->hasRoyaltyOfBook($book_id);

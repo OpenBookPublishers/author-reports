@@ -130,7 +130,7 @@ class Book extends Model
      */
     public function royaltyAgreements()
     {
-        return $this->hasMany('App\RoyaltyAgreement');
+        return $this->hasMany('App\RoyaltyAgreement', 'book_id', 'book_id');
     }
 
     /**

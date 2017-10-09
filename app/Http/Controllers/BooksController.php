@@ -6,6 +6,7 @@ use App\Book;
 use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Session;
 
@@ -100,6 +101,34 @@ class BooksController extends Controller
     }
 
     /**
+     * Load data to populate report tables
+     *
+     * @param Book $book
+     */
+    public function getTableData($book)
+    {
+        $data = [];
+        $book->loadAllData();
+        $this->table_data['readership']['data'] = $book->readership;
+        $data['readership'] = $this->table_data['readership'];
+        $this->table_data['downloads']['data'] = $book->downloads;
+        $data['downloads'] = $this->table_data['downloads'];
+        
+        if (Auth::user()->hasAccessToSalesOfBook($book->book_id)) {
+            $this->table_data['sales']['data'] = $book->sales;
+            $data['sales'] = $this->table_data['sales'];
+        }
+
+        if (Auth::user()->hasAccessToRoyaltyOfBook($book->book_id)
+            && $book->hasRoyalty()) {
+            $this->table_data['royalties']['data'] = $book->royalties;
+            $data['royalties'] = $this->table_data['royalties'];
+        }
+
+        return $data;
+    }
+
+    /**
      * Render a view with readership graphs
      *
      * @param type $book_id
@@ -159,12 +188,7 @@ class BooksController extends Controller
             Session::flash('info', $book->getNotPublishedMessage());
             return back();
         }
-
-        $book->loadAllData();
-        $this->table_data['readership']['data'] = $book->readership;
-        $this->table_data['downloads']['data'] = $book->downloads;
-        $this->table_data['sales']['data'] = $book->sales;
-        $data = $this->table_data;
+        $data = $this->getTableData($book);
 
         return view('books.report-headers', compact('book', 'data'));
     }
@@ -178,12 +202,11 @@ class BooksController extends Controller
     public function fullReport($book_id)
     {
         $book = Book::findOrFail($book_id);
-
-        $book->loadAllData();
-        $this->table_data['readership']['data'] = $book->readership;
-        $this->table_data['downloads']['data'] = $book->downloads;
-        $this->table_data['sales']['data'] = $book->sales;
-        $data = $this->table_data;
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }
+        $data = $this->getTableData($book);
         
         return View::make('books.report-html', compact('book', 'data'));
     }

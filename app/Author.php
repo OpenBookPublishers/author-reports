@@ -45,6 +45,20 @@ class Author extends Model
     }
 
     /**
+     * Determine if this author has contributed to the give book
+     *
+     * @param int $book_id
+     * @return boolean
+     */
+    public function isContributorOfBook($book_id)
+    {
+        return $this->belongsToMany('App\Book', 'book_author',
+                                    'author_id', 'book_id')
+                    ->where('book_author.book_id', $book_id)
+                    ->count() > 0;
+    }
+
+    /**
      * Determine if this author receives royalties of a given book
      *
      * @param int $book_id
