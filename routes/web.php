@@ -22,8 +22,12 @@ Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
 Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')
        ->name('map');
 
-Route::get('/admin/books', 'BooksController@index')->name('admin-books');
-Route::get('/admin/users', 'UsersController@index')->name('admin-users');
+Route::get('/admin/books', 'BooksController@index')
+    ->middleware('admin')
+    ->name('admin-books');
+Route::get('/admin/users', 'UsersController@index')
+    ->middleware('admin')
+    ->name('admin-users');
 
 Route::post('/user/information/update', 'DashboardController@updateInfo')
        ->name('update-info');
