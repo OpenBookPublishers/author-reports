@@ -36,6 +36,7 @@ class Book extends Model
         $this->loadReadership();
         $this->loadSales();
         $this->loadDownloads();
+        $this->loadDownloads();
     }
 
     public function loadReadership()
@@ -51,6 +52,49 @@ class Book extends Model
     public function loadDownloads()
     {
         $this->downloads = $this->getStats("downloads");
+    }
+
+    /**
+     * 
+     *
+     * @todo replace env array with proper table
+     * @param App\RoyaltyAgreement $agreement
+     */
+    public function calculateRoyaltiesInAgreement($agreement)
+    {
+        $royalties   = [];
+        $total_sales = 0;
+        $total_net   = 0;
+
+        $royalties['Net Sales Rev']    = $this->getTotalNetRevenueByYear();
+        $royalties['Non-sales income'] = $this->getNonSalesIncomeByYear();
+        $royalties['Non-sales costs']  = $this->getNonSalesCostsByYear();
+        $royalties['Net Rev Total']    = [];
+
+        foreach ($this->years_active as $y) {
+            $salesThisYear = $this->getTotalSalesByYear($y);
+            $total_sales += $salesThisYear;
+
+            $royalties['Royalties arising'][$y] = 0.00;
+            $royalties['Net Rev Total'][$y] =
+                $royalties['Non-sales income'][$y]
+                + $royalties['Non-sales costs'][$y]
+                + $royalties['Net Sales Rev'][$y];
+            $total_net += isset($royalties['Net Rev Total'][$y])
+                ? $royalties['Net Rev Total'][$y]
+                : 0.00;
+
+            $royalty = $agreement->royaltyRate->calculate(
+                $royalties['Net Rev Total'][$y], $total_net, $salesThisYear);
+            $royalties['Royalties arising'][$y] += $royalty;
+
+            $royalties['Royalties paid'][$y] = $agreement->royaltyRecipient
+                ->getTotalPayments($y);
+            $royalties['Amount due'][$y] = $royalties['Royalties arising'][$y]
+                - $royalties['Royalties paid'][$y];
+        }
+
+        return $royalties;
     }
 
     /**

@@ -27,7 +27,17 @@ class RoyaltyAgreement extends Model
      */
     public function royaltyRate()
     {
-        return $this->hasMany('App\RoyaltyRate');
+        return $this->hasOne('App\RoyaltyRate', 'royalty_agreement_id');
+    }
+
+    /**
+     * Get the recipient of this agreement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function royaltyRecipient()
+    {
+        return $this->hasOne('App\RoyaltyRecipient', 'royalty_agreement_id');
     }
 }
 

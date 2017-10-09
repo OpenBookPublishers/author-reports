@@ -11,10 +11,12 @@
     <?php
     $platform_total = 0;
     $class = $platform === "Net Rev Total" || $platform === "Amount due"
-             ? "result" : "right";
+             ? "result right" : "right";
+    $platform_class = $platform === "Net Rev Total"
+        || $platform === "Amount due" ? "result" : "";
     ?>
     <tr>
-        <td>{{ $platform }}</td>
+        <td class="{{ $platform_class }}">{{ $platform }}</td>
         @foreach ($stats as $year => $stat)
         <?php
         $platform_total += $stat;

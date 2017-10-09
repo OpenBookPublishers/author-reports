@@ -121,8 +121,21 @@ class BooksController extends Controller
 
         if (Auth::user()->hasAccessToRoyaltyOfBook($book->book_id)
             && $book->hasRoyalty()) {
-            $this->table_data['royalties']['data'] = $book->royalties;
-            $data['royalties'] = $this->table_data['royalties'];
+            foreach ($book->royaltyAgreements as $key => $agreement) {
+                if (Auth::user()->isAdmin()
+                    || Auth::user()->author->hasAgreement(
+                        $agreement->royalty_agreement_id)) {
+                    $data['royalties' . $key] = $this->table_data['royalties'];
+                    $data['royalties' . $key]['data']
+                        = $book->calculateRoyaltiesInAgreement($agreement);
+
+                    // Admins will see all agreements, let's differentiate
+                    if (Auth::user()->isAdmin()) {
+                        $data['royalties' . $key]['title'] .= " - "
+                            . $agreement->royaltyRecipient->recipient_name;
+                    }
+                }
+            }
         }
 
         return $data;
