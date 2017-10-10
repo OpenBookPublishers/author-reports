@@ -16,9 +16,9 @@
                         All Books
                     </div>
 
-                    <div class="panel-body">
+                    <div class="panel-body table-responsive">
                         
-                        <table class="table table-responsive">
+                        <table class="table table-hover">
                             <tr>
                                 <td>Title</td>
                                 <td>DOI</td>

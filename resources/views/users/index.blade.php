@@ -18,9 +18,9 @@
                         All Users
                     </div>
 
-                    <div class="panel-body">
+                    <div class="panel-body table-responsive">
                         
-                        <table class="table table-responsive table-hover">
+                        <table class="table table-hover">
                                 <tr>
                                     <td>Name</td>
                                     <td>Surname</td>
