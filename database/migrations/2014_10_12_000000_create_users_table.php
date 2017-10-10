@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('user_id');
             $table->string('name');
             $table->string('surname');
-            $table->string('email')->unique();
+            $table->string('email', 200)->unique();
             $table->string('password');
             $table->boolean('admin')->default(false);
             $table->boolean('display_sales')->default(false);
