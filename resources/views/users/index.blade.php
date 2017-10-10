@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title', 'Books')
+@section('title', 'Users')
 @section('head')
   <link rel="stylesheet"
    href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
@@ -20,22 +20,26 @@
 
                     <div class="panel-body">
                         
-                        <table class="table table-responsive">
-                            <tr>
-                                <td>Name</td>
-                                <td>Surname</td>
-                                <td>Email</td>
-                                <td>ORCID</td>
-                                <td>Twitter</td>
-                                <td></td>
-                            </tr>
+                        <table class="table table-responsive table-hover">
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Surname</td>
+                                    <td>Email</td>
+                                    <td></td>
+                                </tr>
                             @foreach ($users as $user)
                             <tr>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->orcid }}</td>
-                                <td>{{ $user->twitter }}</td>
+                                <td><a href="{{ route('edit-user',
+                                            ['user_id' => $user->user_id]) }}"
+                                       class="btn btn-default">
+                                        <i class="fa fa-pencil"
+                                           aria-hidden="true"></i>
+                                           Edit
+                                    </a>
+                                </td>
                             </tr>
                             @endforeach
                         </table>
