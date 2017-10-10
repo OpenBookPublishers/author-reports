@@ -38,5 +38,5 @@ php artisan key:generate
 ### Database Migrations
 All migrations are located in `database/migrations`, to run them do:
 ```sh
-php migrate
+php artisan migrate
 ```
