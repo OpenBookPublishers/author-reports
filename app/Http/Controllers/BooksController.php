@@ -105,7 +105,7 @@ class BooksController extends Controller
      *
      * @param Book $book
      */
-    public function getTableData($book)
+    private function getTableData($book)
     {
         $data = [];
         $book->loadAllData();
