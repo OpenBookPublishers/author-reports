@@ -74,4 +74,21 @@ class Author extends Model
         
         return false;
     }
+
+    /**
+     * Determine if this author receives royalties from a given agreement
+     *
+     * @param int $agreement_id
+     * @return boolean
+     */
+    public function hasAgreement($agreement_id)
+    {
+        foreach ($this->royaltyRecipient as $royaltyRecipient) {
+            if ($royaltyRecipient->royalty_agreement_id === $agreement_id) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
 }
