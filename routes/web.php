@@ -28,8 +28,14 @@ Route::get('/admin/books', 'BooksController@index')
 Route::get('/admin/users', 'UsersController@index')
     ->middleware('admin')
     ->name('admin-users');
+Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
+       ->middleware('admin')
+       ->name('edit-user');
 
 Route::post('/user/information/update', 'DashboardController@updateInfo')
        ->name('update-info');
+Route::post('/admin/user/edit/{user_id}', 'UsersController@update')
+       ->middleware('admin')
+       ->name('update-user');
 
 Auth::routes();
