@@ -1,47 +1,47 @@
 @extends('layouts.app')
 
-@section('content')
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Reset Password</div>
+@section('title', 'Password reset - OBP Author Reporting')
+@section('head')
+  <link href="{{ mix('css/login.css') }}" rel="stylesheet">
+  <link rel="stylesheet"
+   href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+@endsection
 
-                <div class="panel-body">
-                    @if (session('status'))
-                        <div class="alert alert-success">
-                            {{ session('status') }}
-                        </div>
-                    @endif
+@section('app')
 
-                    <form class="form-horizontal" method="POST" action="{{ route('password.email') }}">
-                        {{ csrf_field() }}
+<form class="login" method="POST" action="{{ route('password.email') }}">
+    {{ csrf_field() }}
+    <p class="title">Password Reset</p>
 
-                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address</label>
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
-
-                                @if ($errors->has('email'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('email') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
-                                    Send Password Reset Link
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
         </div>
+    @endif
+
+    <div class="{{ $errors->has('email') ? ' has-error' : '' }}">
+        <label for="email" class="sr-only">E-Mail Address</label>
+        <input id="email" type="email" name="email" placeholder="email" 
+               value="{{ old('email') }}" required autofocus>
+        <i class="fa fa-user"></i>
+
+        @if ($errors->has('email'))
+            <span class="help-block">
+                <strong>{{ $errors->first('email') }}</strong>
+            </span>
+        @endif
     </div>
-</div>
+
+    <div>
+        <button type="submit" class="btn btn-primary">
+            <i class="spinner"></i>
+            <span class="state">Send Password Reset Link</span>
+        </button>
+    </div>
+</form>
+<footer>
+    <a target="blank" href="https://openbookpublishers.com/">
+        openbookpublishers.com
+    </a>
+</footer>
 @endsection
