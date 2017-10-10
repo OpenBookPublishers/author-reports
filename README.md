@@ -35,7 +35,7 @@ Copy `.env.example` into `.env` and configure accordingly. Then set up the Appli
 php artisan key:generate
 ```
 
-### Database Migratoins
+### Database Migrations
 All migrations are located in `database/migrations`, to run them do:
 ```sh
 php migrate
