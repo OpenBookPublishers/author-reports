@@ -65,9 +65,9 @@ class UsersController extends Controller
 
         $user = User::findOrFail($user_id);
         $input = $request->all();
-        $input['admin'] = $input['admin'] === "true" ? 1 : 0;
-        $input['display_sales'] = $input['display_sales'] === "true" ? 1 : 0;
         $user->fill($input);
+        $user->admin = $input['admin'] === "true" ? 1 : 0;
+        $user->display_sales = $input['display_sales'] === "true" ? 1 : 0;
 
         if ($user->save()) {
             $request->session()
