@@ -62,6 +62,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the name of this user
+     *
+     * @return string
+     */
+    public function fullName()
+    {
+        return $this->name . " " . $this->surname;
+    }
+
+    /**
      * Check if the user can read royalty information for a given book
      *
      * @param int $book_id
