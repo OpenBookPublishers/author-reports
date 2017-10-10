@@ -48,7 +48,7 @@ class User extends Authenticatable
      */
     public function isAuthor()
     {
-        return $this->author->count() > 0;
+        return $this->author->count() !== null;
     }
 
     /**
