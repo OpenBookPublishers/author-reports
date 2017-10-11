@@ -4,23 +4,11 @@ Statistics reporting system for authors based in Laravel 5.4.
 ## Installation
 The following extensions are required: `php-gd`, `php-xml`, `php-mbstring`.
 
-Install all dependencies
+### Dependencies
 ```sh
 composer install
 npm install
 ```
-
-All CSS and JS are compiled using
-```sh
-npm run dev
-```
-
-In production mode run the following instead, it will generate minimized files
-```sh
-npm run production
-```
-
-## Configuration
 
 ### Public Directory
 Configure the web server's document root to be the `public` directory, the `index.php` file there will handle all requests.
@@ -39,4 +27,32 @@ php artisan key:generate
 All migrations are located in `database/migrations`, to run them do:
 ```sh
 php artisan migrate
+```
+
+## Production Deployment
+
+### JS and CSS Compilation
+Compile all CSS and JS into minimized files using elixir.
+```sh
+npm run production
+```
+
+### Configuration Caching
+The following command will cache all configuration files for faster access.
+```sh
+php artisan config:cache
+```
+
+## Development Deployment
+
+### JS and CSS Compilation
+Compile all CSS and JS.
+```sh
+npm run development
+```
+
+### Local Development Server
+You may start a development server at `http://localhost:8000` using:
+```sh
+php artisan serve
 ```
