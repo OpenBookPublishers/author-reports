@@ -67,7 +67,7 @@ class LoginController extends Controller
     {
         $dbUser = User::getUserRecord($request->email);
 
-        // propert match: the two accounts are perfectly matched
+        // proper match: the two accounts are perfectly matched
         $userObj = User::where('user_id', '=', $dbUser->user_id)->first();
 
         // probably a first login: accounts are not linked, but email matches
