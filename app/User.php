@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -92,5 +93,34 @@ class User extends Authenticatable
     public function hasAccessToRoyaltyOfBook($book_id)
     {
         return $this->isAdmin() || $this->author->hasRoyaltyOfBook($book_id);
+    }
+
+    /**
+     * Get the details of a user from the external users database
+     *
+     * @param string $email
+     * @return Collection
+     */
+    public static function getUserRecord($email)
+    {
+        return DB::connection('mysql-users')
+            ->table('jss_customers')
+            ->where('email', '=', $email)
+            ->first();
+    }
+
+    /**
+     * Add the user ID of the local user account to the remote user table
+     *
+     * @param int $remoteId
+     * @param int $localId
+     * @return type
+     */
+    public static function linkAccounts($remoteId, $localId)
+    {
+        return DB::connection('mysql-users')
+            ->table('jss_customers')
+            ->where('customerID', '=', $remoteId)
+            ->update(['user_id' => $localId]);
     }
 }
