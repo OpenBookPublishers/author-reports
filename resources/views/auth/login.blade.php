@@ -13,6 +13,12 @@
     {{ csrf_field() }}
     <p class="title">Log in</p>
 
+    @if (session('status'))
+        <div class="alert alert-success">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <div class="{{ $errors->has('email') ? ' has-error' : '' }}">
         <label for="email" class="sr-only">E-Mail Address</label>
         <input id="email" type="email" name="email" placeholder="email" 
