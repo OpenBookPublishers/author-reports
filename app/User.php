@@ -123,4 +123,20 @@ class User extends Authenticatable
             ->where('customerID', '=', $remoteId)
             ->update(['user_id' => $localId]);
     }
+
+    /**
+     * Update password of the remote user
+     *
+     * @param string $email
+     * @param string $password
+     * @param string $salt
+     * @return boolean
+     */
+    public static function updatePassword($email, $password, $salt)
+    {
+        return DB::connection('mysql-users')
+            ->table('jss_customers')
+            ->where('email', '=', $email)
+            ->update(['password' => $password, 'saltpass' => $salt]);
+    }
 }
