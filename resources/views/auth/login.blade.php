@@ -19,6 +19,9 @@
         </div>
     @endif
 
+    <p>
+        You may log in using your OBP account.
+    </p>
     <div class="{{ $errors->has('email') ? ' has-error' : '' }}">
         <label for="email" class="sr-only">E-Mail Address</label>
         <input id="email" type="email" name="email" placeholder="email" 
@@ -53,6 +56,10 @@
 
         <a class="btn btn-link" href="{{ route('password.request') }}">
             Forgot Your Password?
+        </a>
+
+        <a class="btn btn-link" href="{{ route('register') }}">
+            Create an account
         </a>
     </div>
 </form>
