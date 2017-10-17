@@ -83,7 +83,6 @@ class LoginController extends Controller
         $userObj->name = $dbUser->forename;
         $userObj->surname = $dbUser->surname;
         $userObj->email = $dbUser->email;
-        $userObj->password = bcrypt($request->password);
         $newAccount = $dbUser->user_id === null;
         $userObj->save();
 
