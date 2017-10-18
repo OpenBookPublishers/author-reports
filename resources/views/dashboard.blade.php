@@ -8,6 +8,10 @@
 
 @section('content')
 
+@if (! Auth::user()->isAuthor() && ! Auth::user()->isAdmin())
+    @include('new-account-message')
+@endif
+
 @if (Auth::user()->isAuthor())
     @include('information')
 @endif
