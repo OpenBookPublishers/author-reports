@@ -37,14 +37,6 @@ class BooksController extends Controller
             "data" => [],
             "year_totals" => [],
             "global_total" => 0
-         ],
-         "royalties" => [
-            "title" => "Revenue and Royalties Summary (GBP)",
-            "column" => "",
-            "totals_col" => "",
-            "data" => [],
-            "year_totals" => [],
-            "global_total" => 0
          ]
     ];
     private $graph_data = [
@@ -117,25 +109,6 @@ class BooksController extends Controller
         if (Auth::user()->hasAccessToSalesOfBook($book->book_id)) {
             $this->table_data['sales']['data'] = $book->sales;
             $data['sales'] = $this->table_data['sales'];
-        }
-
-        if (Auth::user()->hasAccessToRoyaltyOfBook($book->book_id)
-            && $book->hasRoyalty()) {
-            foreach ($book->royaltyAgreements as $key => $agreement) {
-                if (Auth::user()->isAdmin()
-                    || Auth::user()->author->hasAgreement(
-                        $agreement->royalty_agreement_id)) {
-                    $data['royalties' . $key] = $this->table_data['royalties'];
-                    $data['royalties' . $key]['data']
-                        = $book->calculateRoyaltiesInAgreement($agreement);
-
-                    // Admins will see all agreements, let's differentiate
-                    if (Auth::user()->isAdmin()) {
-                        $data['royalties' . $key]['title'] .= " - "
-                            . $agreement->royaltyRecipient->recipient_name;
-                    }
-                }
-            }
         }
 
         return $data;
