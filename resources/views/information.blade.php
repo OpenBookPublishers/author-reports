@@ -122,7 +122,7 @@
 
                         @if (!Auth::user()->repositories)
                         <p>
-                            As you know, we strive to collect readership data and download metrics from a number of platforms that host our publications. In order to provide accurate data please let us know if you have uploaded your book to any third-party platform, including university repositories. Please provide the URLs below:
+                            As you know, we strive to <a href="https://www.openbookpublishers.com/section/84/1/">collect readership data and download metrics</a> from a number of platforms that host our publications. In order to provide accurate data please let us know if you have uploaded your book to any third-party platform, including university repositories. Please provide the URLs below:
                         </p>
                         <div class="form-group{{ $errors->has('repositories') ? ' has-error' : '' }}">
                             <label for="email" class="col-md-4 control-label">
