@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="panel-body table-responsive">
-                        
+
                         <table class="table table-hover">
                             <tr>
                                 <td>Title</td>
@@ -46,10 +46,10 @@
                                                 aria-expanded="true">
                                             Actions <span class="caret"></span>
                                         </button>
-                                        
+
                                         <ul class="dropdown-menu right-edge"
                                             aria-labelledby="dropdownMenu1">
-                                            
+
                                             <li>
                                                 <a href="{{ route('report',
                                             ['book_id' => $book->book_id]) }}">
@@ -58,7 +58,7 @@
                                                 Metrics Report
                                                 </a>
                                             </li>
-                                            
+
                                             <li>
                                                 <a href="{{
                                                     route('download-report',
@@ -68,7 +68,7 @@
                                                 Metrics Report (PDF)
                                                 </a>
                                             </li>
-                                            
+
                                             <li>
                                                 <a href="{{ route('graphs',
                                             ['book_id' => $book->book_id]) }}">
@@ -77,7 +77,7 @@
                                                 Readership Graphs
                                                 </a>
                                             </li>
-                                            
+
                                             <li>
                                                 <a href="{{ route('map',
                                             ['book_id' => $book->book_id]) }}">
@@ -92,7 +92,7 @@
                             </tr>
                             @endforeach
                         </table>
-                        
+
                     </div>
                 </div>
             </div>
