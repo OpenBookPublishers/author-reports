@@ -47,7 +47,7 @@
                                             Actions <span class="caret"></span>
                                         </button>
                                         
-                                        <ul class="dropdown-menu"
+                                        <ul class="dropdown-menu right-edge"
                                             aria-labelledby="dropdownMenu1">
                                             
                                             <li>
