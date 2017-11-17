@@ -36,7 +36,6 @@ class Book extends Model
         $this->loadReadership();
         $this->loadSales();
         $this->loadDownloads();
-        $this->loadDownloads();
     }
 
     public function loadReadership()
