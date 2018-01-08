@@ -22,7 +22,7 @@
                         </a>
 
                         <a data-toggle="modal"
-                           data-target="#pdf-{{ $book->id }}"
+                           data-target="#pdf-{{ $book->book_id }}"
                            class="btn-large square relative pointer">
                             <div class="centered full-width">
                                 <i class="fa fa-file-pdf-o fa-large"

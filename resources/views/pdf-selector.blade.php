@@ -1,4 +1,4 @@
-<div class="modal fade" id="pdf-{{ $book->id }}" role="dialog">
+<div class="modal fade" id="pdf-{{ $book->book_id }}" role="dialog">
   <div class="modal-dialog">
 
     <div class="modal-content">
