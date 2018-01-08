@@ -6,6 +6,8 @@
 
 <div class="report-wrapper">
     @foreach ($data as $table)
-        @include('books.table')
+        @if (!empty($table['data']))
+            @include('books.table')
+        @endif
     @endforeach
 </div>
