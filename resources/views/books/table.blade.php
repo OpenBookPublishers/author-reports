@@ -2,9 +2,22 @@
 <table class="report-table table table-responsive">
     <tr>
       <td class="platform border">{{ $table['column'] }}</td>
-      @foreach ($book->years_active as $year)
-      <td class="border right">{{ $year }}</td>
-      @endforeach
+      @if ($year === null)
+        @foreach ($book->years_active as $year => $months)
+      <td class="border right">
+          <a href="{{ URL::route('report', ['book_id' => $book->book_id,
+                                            'year' => $year]) }}">
+            {{ $year }}
+          </a>
+      </td>
+        @endforeach
+      @else
+        @foreach ($book->years_active[$year] as $month => $blank)
+      <td class="border right">
+          {{ Carbon\Carbon::createFromFormat("m", $month)->format('M') }}
+      </td>
+        @endforeach        
+      @endif
       <td class="border right">Totals</td>
     </tr>
     @foreach ($table['data'] as $platform => $stats)
