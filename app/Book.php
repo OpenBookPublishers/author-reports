@@ -225,7 +225,7 @@ class Book extends Model
      *
      * @return array
      */
-    private function getYearsActive()
+    public function getYearsActive()
     {
         $years = [];
         $cur_date = $this->publication_date;
