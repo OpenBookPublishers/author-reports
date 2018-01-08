@@ -208,6 +208,19 @@ class Book extends Model
     }
 
     /**
+     * Remove special characters from book title
+     * and replace spaces with underscores.
+     *
+     * @return string
+     */
+    public function sanitisedTitle()
+    {
+        $sane_title = filter_var($this->title, FILTER_SANITIZE_STRING,
+                       FILTER_FLAG_STRIP_HIGH);
+        return str_replace(' ', '_', $sane_title);
+    }
+
+    /**
      * Get the list of years and months since publication of this book.
      *
      * @return array
