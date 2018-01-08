@@ -27,6 +27,9 @@
 
                     <div class="panel-body">
                         @include('books.report')
+                        <p class="text-muted">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i> You may click on a year to view its monthly breakdown.
+                        </p>
                     </div>
                 </div>
             </div>
