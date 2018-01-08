@@ -237,7 +237,9 @@ class BooksController extends Controller
             return back();
         }
 
-        $filename = $book->book_id . '.pdf';
+        $name = "Metrics_Report";
+        $title = $year !== null ? $year . "_" . $name : $name;
+        $filename = $title . "-" . $book->sanitisedTitle() . ".pdf";
         
         return new Response($this->fullReportPdf($book_id, $year), 200, [
             'Content-Description' => 'File Transfer',
