@@ -1,12 +1,10 @@
-@extends('layouts.master')
+@extends('layouts.dashboard-btn')
 @section('title', 'Books')
 @section('head')
   <link rel="stylesheet"
    href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 @endsection
 @section('content')
-
-@include('layouts.dashboard-btn')
 
     <div class="container">
         <div class="row">

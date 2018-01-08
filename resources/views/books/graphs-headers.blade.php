@@ -1,8 +1,6 @@
-@extends('layouts.master')
+@extends('layouts.dashboard-btn')
 @section('title', 'Readership Graphs')
 @section('content')
-
-@include('layouts.dashboard-btn')
 
     <div class="container">
         <div class="row">
