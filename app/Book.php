@@ -28,29 +28,29 @@ class Book extends Model
         "(SalesCSVDownloads) Downloads" => "Retail Distributors"
     ];
 
-    public function loadAllData()
+    public function loadAllData($year = null)
     {
         $this->years_active = $this->getYearsActive();
         $this->loadCountryReadership();
         $this->loadContinentReadership();
-        $this->loadReadership();
-        $this->loadSales();
-        $this->loadDownloads();
+        $this->loadReadership($year);
+        $this->loadSales($year);
+        $this->loadDownloads($year);
     }
 
-    public function loadReadership()
+    public function loadReadership($year = null)
     {
-        $this->readership = $this->getStats("readership");
+        $this->readership = $this->getStats("readership", $year);
     }
 
-    public function loadSales()
+    public function loadSales($year = null)
     {
-        $this->sales = $this->getStats("sales");
+        $this->sales = $this->getStats("sales", $year);
     }
 
-    public function loadDownloads()
+    public function loadDownloads($year = null)
     {
-        $this->downloads = $this->getStats("downloads");
+        $this->downloads = $this->getStats("downloads", $year);
     }
 
     /**
@@ -208,20 +208,33 @@ class Book extends Model
     }
 
     /**
-     * Get the list of years since publication of this book.
+     * Get the list of years and months since publication of this book.
      *
      * @return array
      */
     private function getYearsActive()
     {
         $years = [];
-        $max_year = date("Y");
-        $min_year = date("Y", strtotime($this->publication_date));
+        $cur_date = $this->publication_date;
+        $end = date("Y-m-d");
+        $d = "01"; // we want whole months, so we start counting from the first
         
-        for ($y = $min_year; $y <= $max_year; $y++) {
-            $years[] = $y;
-        }
-        
+        do {
+            $y = date("Y", strtotime($cur_date));
+            $m = date("m", strtotime($cur_date));
+
+            if (!isset($years[$y])) {
+                $years[$y] = [];
+            }
+
+            if (!isset($years[$y][$m])) {
+                $years[$y][$m] = [];
+            }
+
+            $cur_date = date("Y-m-d",
+                strtotime("+1 month", strtotime($y . "-" . $m . "-". $d)));
+        } while ($cur_date < $end);
+
         return $years;
     }
 
@@ -249,18 +262,27 @@ class Book extends Model
         }
     }
 
-    private function getMeasurement($type, $measure, $alias, $year)
+    private function getMeasurement($type, $measure, $alias, $year, $month = null)
     {
         switch ($type) {
             case "readership":
             case "downloads":
-                return $this->getReadershipMeasureYear($measure, $year);
+                if ($month === null) {
+                    return $this->getReadershipMeasureYear($measure, $year);
+                } else {
+                    return $this->getReadershipMeasureMonth($measure, $year,
+                                                           $month);
+                }
             case "sales":
-                return $this->getSalesFormatYear($alias, $year);
-       }
+                if ($month === null) {
+                    return $this->getSalesFormatYear($alias, $year);
+                } else {
+                    return $this->getSalesFormatMonth($alias, $year, $month);
+                }
+        }
     }
 
-    private function getStats($type)
+    private function getStats($type, $year = null)
     {
         $stats = [];
         $measures = $this->getMeasures($type);
@@ -270,18 +292,31 @@ class Book extends Model
                 $stats[$alias] = [];
             }
 
-            foreach ($this->years_active as $y) {
-                if (!isset($stats[$alias][$y])) {
-                    $stats[$alias][$y] = 0;
-                }
+            foreach ($this->years_active as $y => $months) {
+                if ($year === null) {
+                    if (!isset($stats[$alias][$y])) {
+                        $stats[$alias][$y] = 0;
+                    }
 
-                $units = $this->getMeasurement($type, $measure, $alias, $y);
-                $stats[$alias][$y] += $units;
+                    $units = $this->getMeasurement($type, $measure, 
+                                                       $alias, $y);
+                    $stats[$alias][$y] += $units;
+                } elseif ($year === $y) {
+                    foreach ($months as $m => $na) {
+                        if (!isset($stats[$alias][$m])) {
+                            $stats[$alias][$m] = 0;
+                        }
+
+                        $units = $this->getMeasurement($type, $measure,
+                                                       $alias, $y, $m);
+                        $stats[$alias][$m] += $units;
+                    }
+                }
             }
 
             // clean up
             $cleanup = true;
-            foreach ($stats[$alias] as $year => $val) {
+            foreach ($stats[$alias] as $y => $val) {
                 if ($val !== 0) {
                     $cleanup = false;
                     break;
@@ -297,7 +332,7 @@ class Book extends Model
     /**
      * Obtain a multidimensional array in the form of
      * [(integer)Year => (float)NetRevenue].
-     *
+     *  
      * @return array
      */
     private function getTotalNetRevenueByYear()
@@ -545,6 +580,37 @@ class Book extends Model
     }
 
     /**
+     * Obtain the total readership of a particular measure in a given year
+     * and month for this book.
+     *
+     * @param string $measure
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    private function getReadershipMeasureMonth($measure, $year, $month)
+    {
+        $result = DB::connection('mysql-stats')
+            ->table('EventMeasurements')
+            ->join('Measures','EventMeasurements.measure_id', '=',
+                'Measures.measure_id')
+            ->join('Events','EventMeasurements.event_id', '=',
+                'Events.event_id')
+            ->join('Countries', 'Countries.country_id', '=',
+                'Events.country_id')
+            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
+            ->select( DB::raw('SUM(`value`) as readership'))
+            ->whereYear('timestamp', $year)
+            ->whereMonth('timestamp', $month)
+            ->where([
+                ['measure_description', '=', $measure],
+                ['doi', '=', $this->doi]])
+            ->first();
+        
+        return $result->readership !== null ? $result->readership : 0;
+    }
+
+    /**
      * Obtain the total sales of this book in a given year for a particular
      * book format (e.g. epub, hardback, pdf)
      *
@@ -566,6 +632,29 @@ class Book extends Model
     }
 
     /**
+     * Obtain the total sales of this book in a given year and month
+     * for a particular book format (e.g. epub, hardback, pdf)
+     *
+     * @param string $format
+     * @param int $year
+     * @param int $month
+     * @return int
+     */
+    private function getSalesFormatMonth($format, $year, $month)
+    {
+        $result = DB::table('sale')
+            ->join('volume','sale.volume_id', '=', 'volume.volume_id')
+            ->join('book','volume.book_id', '=', 'book.book_id')
+            ->select( DB::raw('SUM(`sales_units`) as sales'))
+            ->whereYear('sale_date', $year)
+            ->whereMonth('sale_date', $month)
+            ->where([['doi', '=', $this->doi], ['format_name', '=', $format]])
+            ->first();
+        
+        return $result->sales !== null ? $result->sales : 0;
+    }
+
+    /**
      * Obtain the total this books sales in a given year
      *
      * @param int $year
@@ -578,6 +667,26 @@ class Book extends Model
             ->join('book','volume.book_id', '=', 'book.book_id')
             ->select( DB::raw('SUM(`sales_units`) as sales'))
             ->whereYear('sale_date', $year)
+            ->where('doi', '=', $this->doi)
+            ->first();
+        
+        return $result->sales !== null ? $result->sales : 0;
+    }
+
+    /**
+     * Obtain the total this books sales in a given year
+     *
+     * @param int $year
+     * @return int
+     */
+    private function getTotalSalesByYearMonth($year, $month)
+    {
+        $result = DB::table('sale')
+            ->join('volume','sale.volume_id', '=', 'volume.volume_id')
+            ->join('book','volume.book_id', '=', 'book.book_id')
+            ->select( DB::raw('SUM(`sales_units`) as sales'))
+            ->whereYear('sale_date', $year)
+            ->whereMonth('sale_date', $month)
             ->where('doi', '=', $this->doi)
             ->first();
         
