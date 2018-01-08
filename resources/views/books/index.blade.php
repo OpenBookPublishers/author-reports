@@ -60,9 +60,9 @@
                                             </li>
                                             
                                             <li>
-                                                <a href="{{
-                                                    route('download-report',
-                                            ['book_id' => $book->book_id]) }}">
+                                                <a data-toggle="modal"
+                                                   data-target="#pdf-{{ $book->book_id }}"
+                                                   class="pointer">
                                                 <i class="fa fa-file-pdf-o"
                                                    aria-hidden="true"></i>
                                                 Metrics Report (PDF)
@@ -90,6 +90,7 @@
                                     </div>
                                 </td>
                             </tr>
+                            @include('../pdf-selector')
                             @endforeach
                         </table>
                         
