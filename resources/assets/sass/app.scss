@@ -50,6 +50,10 @@
     width: 100% !important;
 }
 
+.half-width {
+    width: 50% !important;
+}
+
 .square {
     width: 20%;
     height: 12vw;
@@ -68,6 +72,18 @@
     transform: translate(-50%, -50%);
 }
 
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
 .fa.fa-large {
     font-size: 9em;
 }
@@ -78,6 +94,10 @@
 
 .line-break {
   margin-top: 2em;
+}
+
+.line-break.half {
+  margin-top: 1em;
 }
 
 .line-break.double {
@@ -103,4 +123,8 @@ td.result {
 
 td.platform {
   width: 20%;
+}
+
+.pointer {
+  cursor: pointer;
 }
