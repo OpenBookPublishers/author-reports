@@ -177,9 +177,10 @@ class BooksController extends Controller
         }
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
+        $is_pdf = false;
 
         return view('books.report-headers',
-            compact('book', 'data', 'year'));
+            compact('book', 'data', 'year', 'is_pdf'));
     }
 
     /**
@@ -198,9 +199,10 @@ class BooksController extends Controller
         }
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
+        $is_pdf = true;
         
         return View::make('books.report-html',
-            compact('book', 'data', 'year'));
+            compact('book', 'data', 'year', 'is_pdf'));
     }
 
     /**
