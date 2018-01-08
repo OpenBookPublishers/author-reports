@@ -5,10 +5,14 @@
       @if ($year === null)
         @foreach ($book->years_active as $year => $months)
       <td class="border right">
+          @if ($is_pdf)
+          {{ $year }}
+          @else
           <a href="{{ URL::route('report', ['book_id' => $book->book_id,
                                             'year' => $year]) }}">
             {{ $year }}
           </a>
+          @endif
       </td>
         @endforeach
       @else
