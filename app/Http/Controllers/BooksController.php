@@ -97,10 +97,10 @@ class BooksController extends Controller
      *
      * @param Book $book
      */
-    private function getTableData($book)
+    private function getTableData($book, $year = null)
     {
         $data = [];
-        $book->loadAllData();
+        $book->loadAllData($year);
         $this->table_data['readership']['data'] = $book->readership;
         $data['readership'] = $this->table_data['readership'];
         $this->table_data['downloads']['data'] = $book->downloads;
@@ -165,49 +165,57 @@ class BooksController extends Controller
      * Generate the report in HTML
      *
      * @param int $book_id
+     * @param String $year to be converted to integer
      * @return Illuminate\Support\Facades\View
      */
-    public function fullReportHtml($book_id)
+    public function fullReportHtml($book_id, $year = null)
     {
         $book = Book::findOrFail($book_id);
         if (!$book->isPublished()) {
             Session::flash('info', $book->getNotPublishedMessage());
             return back();
         }
-        $data = $this->getTableData($book);
+        $year = $year !== null ? (int) $year : null;
+        $data = $this->getTableData($book, $year);
 
-        return view('books.report-headers', compact('book', 'data'));
+        return view('books.report-headers',
+            compact('book', 'data', 'year'));
     }
 
     /**
      * Generate the report in HTML
      *
      * @param int $book_id
+     * @param int $year
      * @return Illuminate\Support\Facades\View
      */
-    public function fullReport($book_id)
+    public function fullReport($book_id, $year = null)
     {
         $book = Book::findOrFail($book_id);
         if (!$book->isPublished()) {
             Session::flash('info', $book->getNotPublishedMessage());
             return back();
         }
-        $data = $this->getTableData($book);
+        $year = $year !== null ? (int) $year : null;
+        $data = $this->getTableData($book, $year);
         
-        return View::make('books.report-html', compact('book', 'data'));
+        return View::make('books.report-html',
+            compact('book', 'data', 'year'));
     }
 
     /**
      * Renders the report in PDF and returns it as a string
      *
      * @param int $book_id
+     * @param int $year
      * @return string
      */
-    public function fullReportPdf($book_id)
+    public function fullReportPdf($book_id, $year = null)
     {
         $dompdf = new Dompdf;
         //$dompdf->set_base_path();
-        $dompdf->loadHtml($this->fullReport($book_id)->render());
+        $year = $year !== null ? (int) $year : null;
+        $dompdf->loadHtml($this->fullReport($book_id, $year)->render());
         $dompdf->render();
         return $dompdf->output();
     }
@@ -216,9 +224,10 @@ class BooksController extends Controller
      * Generates the report and outputs it as a PDF
      *
      * @param int $book_id
+     * @param int $year
      * @return Response
      */
-    public function downloadFullReport($book_id)
+    public function downloadFullReport($book_id, $year = null)
     {
         $book = Book::findOrFail($book_id);
         if (!$book->isPublished()) {
@@ -228,7 +237,7 @@ class BooksController extends Controller
 
         $filename = $book->book_id . '.pdf';
         
-        return new Response($this->fullReportPdf($book_id), 200, [
+        return new Response($this->fullReportPdf($book_id, $year), 200, [
             'Content-Description' => 'File Transfer',
             'Content-Disposition' => 'attachment; filename="'.$filename.'"',
             'Content-Transfer-Encoding' => 'binary',
