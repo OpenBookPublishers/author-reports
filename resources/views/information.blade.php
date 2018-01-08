@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-md-2" style="padding-top: 7px;">
                                 <a class="btn-link" target="_blank"
-                                   href="https://twitter.com/OpenBookPublish">
+                                   href="https://twitter.com/intent/user?screen_name=OpenBookPublish">
                                     <span class="fa fa-twitter"></span>
                                     Follow us
                                 </a>
