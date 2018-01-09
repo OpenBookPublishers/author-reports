@@ -18,10 +18,10 @@
                         
                         <table class="table table-hover">
                             <tr>
-                                <td>Title</td>
-                                <td>DOI</td>
-                                <td>Authors</td>
-                                <td></td>
+                                <th>Title</th>
+                                <th>DOI</th>
+                                <th>Authors</th>
+                                <th></th>
                             </tr>
                             @foreach ($books as $book)
                             <tr>

@@ -34,12 +34,12 @@
                     <div class="panel-body table-responsive">
 
                         <table class="table table-hover">
-                                <tr>
-                                    <td>Name</td>
-                                    <td>Surname</td>
-                                    <td>Email</td>
-                                    <td></td>
-                                </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th>Surname</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
                             @foreach ($users as $user)
                             <tr>
                                 <td>{{ $user->name }}</td>

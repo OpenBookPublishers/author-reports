@@ -2,10 +2,10 @@
 <div class="table-responsive">
     <table class="report-table table">
         <tr>
-          <td class="platform border">{{ $table['column'] }}</td>
+          <th class="platform border">{{ $table['column'] }}</th>
           @if ($year === null)
             @foreach ($book->years_active as $year => $months)
-          <td class="border right">
+          <th class="border right">
               @if ($is_pdf)
               {{ $year }}
               @else
@@ -14,16 +14,16 @@
                 {{ $year }}
               </a>
               @endif
-          </td>
+          </th>
             @endforeach
           @else
             @foreach ($book->years_active[$year] as $month => $blank)
-          <td class="border right">
+          <th class="border right">
               {{ Carbon\Carbon::createFromFormat("m", $month)->format('M') }}
-          </td>
+          </th>
             @endforeach        
           @endif
-          <td class="border right">Totals</td>
+          <th class="border right">Totals</th>
         </tr>
         @foreach ($table['data'] as $platform => $stats)
         <?php
