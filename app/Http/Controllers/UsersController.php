@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Author;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
+        $users = User::orderBy('surname')->get();
         return view('users.index', compact('users'));
     }
 
