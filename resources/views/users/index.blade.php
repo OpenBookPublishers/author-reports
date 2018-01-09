@@ -4,9 +4,24 @@
   <link rel="stylesheet"
    href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 @endsection
+@section('secondary-btn')
+    <a id="new-user-btn" class="btn btn-default pointer pull-right">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        New User
+    </a>
+    <script>
+        $(document).ready(function() {
+            $('#new-user-btn').click(function() {
+               $('#new-user-panel').removeClass('hidden'); 
+            });
+        });
+    </script>
+@endsection
 @section('content')
 
-@include('auth.register-form')
+    <div id="new-user-panel" class="hidden">
+        @include('auth.register-form')
+    </div>
 
     <div class="container">
         <div class="row">
