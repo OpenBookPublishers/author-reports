@@ -41,7 +41,8 @@ class UsersController extends Controller
     public function edit($user_id)
     {
         $user = User::findOrFail($user_id);
-        return view('users.edit', compact('user'));
+        $authors = Author::orderBy('author_name')->get();
+        return view('users.edit', compact('user', 'authors'));
     }
 
     /**
