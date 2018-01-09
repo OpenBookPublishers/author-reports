@@ -4,8 +4,6 @@
   <link rel="stylesheet"
    href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 @endsection
-@section('content')
-
 @section('secondary-btn')
     <a data-toggle="modal"
        data-target="#pdf-{{ $book->book_id }}"
@@ -15,6 +13,7 @@
     </a>
     @include('pdf-selector')
 @endsection
+@section('content')
 
     <div class="container">
         <div class="row">
