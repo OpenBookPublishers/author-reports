@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Author;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Registered;
@@ -53,6 +54,9 @@ class RegisterController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:user',
             'password' => 'required|string|min:6|confirmed',
+            'admin' => 'required',
+            'author' => 'required',
+            'author_id' => 'required_if:author,==,true'
         ]);
     }
 
@@ -69,6 +73,7 @@ class RegisterController extends Controller
             'surname' => $data['surname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'admin' => $data['admin'] === "true" ? 1 : 0
         ]);
     }
 
@@ -76,16 +81,42 @@ class RegisterController extends Controller
      * Handle a registration request for the application.
      * Overrides parent method.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function register(Request $request)
     {
         $this->validator($request->all())->validate();
 
-        event(new Registered($user = $this->create($request->all())));
+        $author_found = true;
+        $registered = false;
 
-        return $this->registered($request, $user)
-                        ?: redirect($this->redirectPath());
+        if ($request->author === "true") {
+            $author = Author::find($request->author_id);
+            if (!$author) {
+                $author_found = false;
+            }
+        }
+
+        if ($author_found) {
+            event(new Registered($user = $this->create($request->all())));
+            $registered = true;
+        }
+
+        if ($registered && $request->author === "true") {
+            $author->user_id = $user->user_id;
+            $author->save();
+        }
+
+        if ($registered && $author_found) {
+             \Session::flash('success', 'User created.');
+        } elseif (!$registered && $author_found) {
+             \Session::flash('error', 'User could not be created.');
+        } elseif (!$registered && !$author_found) {
+            \Session::flash('error',
+                    'Author "' . $request->author_id . '" not found');
+        }
+
+        return redirect($this->redirectPath());
     }
 }
