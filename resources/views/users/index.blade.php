@@ -1,9 +1,5 @@
 @extends('layouts.dashboard-btn')
 @section('title', 'Users')
-@section('head')
-  <link rel="stylesheet"
-   href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-@endsection
 @section('secondary-btn')
     <a id="new-user-btn" class="btn btn-default pointer pull-right">
         <i class="fa fa-plus" aria-hidden="true"></i>

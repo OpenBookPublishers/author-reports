@@ -1,9 +1,5 @@
 @extends('layouts.dashboard-btn')
 @section('title', 'Readership Graphs')
-@section('head')
-  <link rel="stylesheet"
-   href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-@endsection
 @section('secondary-btn')
     <a data-toggle="modal"
        data-target="#pdf-{{ $book->book_id }}"

@@ -3,8 +3,6 @@
 @section('title', 'OBP Author Reporting')
 @section('head')
   <link href="{{ mix('css/login.css') }}" rel="stylesheet">
-  <link rel="stylesheet"
-   href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 @endsection
 
 @section('app')
