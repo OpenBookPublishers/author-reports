@@ -72,6 +72,35 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('author_id') ? ' has-error' : '' }}">
+                            <label for="author_id" class="col-md-4 control-label">Author</label>
+
+                            <div class="col-md-6">
+                                <select id="author_id"
+                                        class="form-control selectpicker"
+                                        data-live-search="true"
+                                        name="author_id">
+                                    @foreach ($authors as $author)
+                                    <option value="{{ $author->author_id }}"
+                                            data-tokens="
+                                            {{ $author->author_name . " " }}
+                                            @foreach ($author->books as $book)
+                                            {{ $book->title . " " }}
+                                            @endforeach
+                                            ">
+                                        {{ $author->author_name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+
+                                @if ($errors->has('author_id'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('author_id') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
