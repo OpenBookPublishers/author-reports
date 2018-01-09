@@ -9,6 +9,7 @@ class Author extends Model
 
     public $table = "author";
     public $primaryKey = "author_id";
+    public $timestamps = false;
 
     /**
      * Get the books associated with this author
