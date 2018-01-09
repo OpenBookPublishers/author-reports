@@ -81,4 +81,23 @@ class UsersController extends Controller
         
         return $this->index();
     }
+
+    /**
+     * Delete a user
+     *
+     * @param int $user_id
+     * @return type
+     */
+    public function delete($user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        if ($user->delete()) {
+            \Session::flash('success', 'The user has been deleted.');
+        } else {
+            \Session::flash('error', 'Sorry. There was a problem.');
+        }
+
+        return $this->index();
+    }
 }
