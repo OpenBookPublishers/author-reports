@@ -50,9 +50,7 @@
                 data-live-search="true"
                 data-live-search-placeholder="Search by author name or book title"
                 name="author_id">
-            <option selected>
-                -- Please Select --
-            </option>
+            <option>-- Please Select --</option>
             @foreach ($authors as $author)
             <option value="{{ $author->author_id }}"
                     data-tokens="
@@ -60,7 +58,7 @@
                     @foreach ($author->books as $book)
                     {{ $book->title . " " }}
                     @endforeach
-                    ">
+                    " {{ isset($user) && $user->author->author_id === $author->author_id ? "selected" : "" }}>
                 {{ $author->author_name }}
             </option>
             @endforeach
