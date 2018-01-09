@@ -17,7 +17,7 @@
                     </div>
 
                     <div class="panel-body table-responsive">
-                        
+
                         <table class="table table-hover">
                                 <tr>
                                     <td>Name</td>
@@ -41,7 +41,7 @@
                             </tr>
                             @endforeach
                         </table>
-                        
+
                     </div>
                 </div>
             </div>
