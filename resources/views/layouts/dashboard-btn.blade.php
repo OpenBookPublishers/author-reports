@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('app')
 @include('layouts.nav')
 @include('layouts.status')
 <div class="container" style="margin-bottom: 1em;">
@@ -16,3 +17,4 @@
     </div>
 </div>
 @yield('content')
+@endsection
