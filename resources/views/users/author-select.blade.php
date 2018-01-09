@@ -9,7 +9,7 @@
             <label>
                 <input type="radio"
                        name="author"
-                       {{ isset($user) && $user->author->author_id
+                       {{ isset($user) && isset($user->author)
                           ? 'checked="checked"' : '' }}
                        value="true" autofocus>
                 Yes
@@ -19,7 +19,7 @@
             <label>
                 <input type="radio"
                        name="author"
-                       {{ isset($user) && $user->author->author_id
+                       {{ isset($user) && ($user->author)
                           ? '' : 'checked="checked"' }}
                        value="false" autofocus>
                 No
@@ -58,7 +58,7 @@
                     @foreach ($author->books as $book)
                     {{ $book->title . " " }}
                     @endforeach
-                    " {{ isset($user) && $user->author->author_id === $author->author_id ? "selected" : "" }}>
+                    " {{ isset($user) && isset($user->author) && $user->author->author_id === $author->author_id ? "selected" : "" }}>
                 {{ $author->author_name }}
             </option>
             @endforeach
