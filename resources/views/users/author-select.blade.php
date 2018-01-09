@@ -9,6 +9,8 @@
             <label>
                 <input type="radio"
                        name="author"
+                       {{ isset($user) && $user->author->author_id
+                          ? 'checked="checked"' : '' }}
                        value="true" autofocus>
                 Yes
             </label>
@@ -17,7 +19,8 @@
             <label>
                 <input type="radio"
                        name="author"
-                       checked="checked"
+                       {{ isset($user) && $user->author->author_id
+                          ? '' : 'checked="checked"' }}
                        value="false" autofocus>
                 No
             </label>
@@ -71,11 +74,10 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function() {
-        var is_author = $('#register-form input:radio[name=author]');
-        toggleAuthorSelect(is_author.value);
+        var is_author = $('input:radio[name=author]');
+        toggleAuthorSelect(is_author.prop('checked'));
 
         is_author.change(function() {
             toggleAuthorSelect(this.value);
@@ -84,7 +86,7 @@
 
     function toggleAuthorSelect(value) {
         var author_select = $('#author-select-group');
-        if (value == 'true') { 
+        if (value) { 
             author_select.removeClass('hidden'); 
         } else {
             author_select.addClass('hidden');
