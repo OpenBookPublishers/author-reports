@@ -8,6 +8,9 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
+// Bootstrap-select
+@import "node_modules/bootstrap-select/sass/bootstrap-select";
+
 .navbar-brand {
     background-image: url("/pictures/logo.gif");
     background-repeat: no-repeat;
