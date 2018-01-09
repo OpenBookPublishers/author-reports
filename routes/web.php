@@ -39,5 +39,8 @@ Route::post('/user/information/update', 'DashboardController@updateInfo')
 Route::post('/admin/user/edit/{user_id}', 'UsersController@update')
        ->middleware('admin')
        ->name('update-user');
+Route::post('/admin/user/delete/{user_id}', 'UsersController@delete')
+       ->middleware('admin')
+       ->name('delete-user');
 
 Auth::routes();
