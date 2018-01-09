@@ -1,6 +1,6 @@
 <p class="section-header line-break">{{ $table['title'] }}</p>
 <div class="table-responsive">
-    <table class="report-table table table-responsive">
+    <table class="report-table table">
         <tr>
           <td class="platform border">{{ $table['column'] }}</td>
           @if ($year === null)
