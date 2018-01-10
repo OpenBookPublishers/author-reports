@@ -10,7 +10,7 @@
                 <div class="panel-body">
 
                     <div class="alert alert-info">
-                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <i class="fa fa-lg fa-exclamation-circle" aria-hidden="true"></i>
                         <b>Please take a few seconds to answer the questions below.</b>
                     </div>
                     <form class="form-horizontal" method="POST"
