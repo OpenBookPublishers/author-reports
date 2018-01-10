@@ -75,9 +75,4 @@ class DashboardController extends Controller
         
         return view('dashboard');
     }
-    
-    public function report($doi)
-    {
-        $report = new BookReport($doi);
-    }
 }
