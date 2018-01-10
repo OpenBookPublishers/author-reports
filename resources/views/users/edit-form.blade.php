@@ -24,9 +24,7 @@
                             <div class="col-md-6">
                                 <textarea id="repositories"
                                           class="form-control"
-                                          name="repositories">
-                              {{ $user->repositories or old('repositories') }}"
-                                </textarea>
+                                          name="repositories">{{ $user->repositories or old('repositories') }}</textarea>
 
                                 @if ($errors->has('repositories'))
                                     <span class="help-block">
