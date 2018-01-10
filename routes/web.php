@@ -37,6 +37,8 @@ Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
 
 Route::post('/account/update', 'DashboardController@updateAccount')
        ->name('update-account');
+Route::post('/password/update', 'DashboardController@updatePassword')
+       ->name('update-password');
 Route::post('/user/information/update', 'DashboardController@updateInfo')
        ->name('update-info');
 Route::post('/admin/user/edit/{user_id}', 'UsersController@update')

@@ -15,15 +15,16 @@
 @endsection
 @section('content')
 
-    <div id="password-panel" class="container hidden">
+    <div id="password-panel" class="container {{ $errors->has('old-password') || $errors->has('password') || $errors->has('password_confirmation') ? '' : 'hidden' }}">
         <div class="row">
             <div class="col-md-12">
-                <div class="panel panel-default" style="min-height: 30em;">
+                <div class="panel panel-default" style="min-height: 20em;">
                     <div class="panel-heading">
                         Password update
                     </div>
 
                     <div class="panel-body">
+                        @include('users.password-form')
                     </div>
 
                 </div>

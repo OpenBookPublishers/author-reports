@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\BookReport;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -113,6 +113,38 @@ class DashboardController extends Controller
         if ($user->save()) {
             $request->session()->flash('success',
                 'Thank you. Your account has been updated.');
+        } else {
+            $request->session()->flash('error',
+                'Sorry. There was a problem.');
+        }
+        
+        return redirect('dashboard');
+    }
+
+    /**
+     * Save password.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePassword(Request $request)
+    {
+        $user = Auth::user();
+        $this->validate($request, [
+            'old-password' => 'required',
+            'password' => 'required|string|min:6|confirmed'
+        ]);
+
+        if (!Hash::check($request->input('old-password'), $user->password)) {
+            return back()->withErrors(['old-password' =>
+                'Please enter your current password.']);
+        }
+
+        $user->password = bcrypt($request->password);
+
+        if ($user->save()) {
+            $request->session()->flash('success',
+                'Thank you. Your password has been updated.');
         } else {
             $request->session()->flash('error',
                 'Sorry. There was a problem.');
