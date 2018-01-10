@@ -92,6 +92,11 @@ class UsersController extends Controller
     {
         $user = User::findOrFail($user_id);
 
+        if (isset($user->author)) {
+            $user->author->user_id = null;
+            $user->author->save();
+        }
+
         if ($user->delete()) {
             \Session::flash('success', 'The user has been deleted.');
         } else {
