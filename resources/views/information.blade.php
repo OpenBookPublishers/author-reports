@@ -5,10 +5,14 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Information</div>
+                <div class="panel-heading">Information request</div>
 
                 <div class="panel-body">
 
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                        <b>Please take a few seconds to answer the questions below.</b>
+                    </div>
                     <form class="form-horizontal" method="POST"
                           action="{{ route('update-info') }}">
                         {{ csrf_field() }}
