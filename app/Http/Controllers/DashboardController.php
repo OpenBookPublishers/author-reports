@@ -40,7 +40,6 @@ class DashboardController extends Controller
     public function updateInfo(Request $request)
     {
         $this->validate($request, [
-            'display_sales' => 'required',
             'orcid' => 'nullable|min:19|max:40',
             'twitter' => 'nullable',
             'repositories' => 'nullable:'
