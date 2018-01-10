@@ -106,7 +106,7 @@ class UsersController extends Controller
                 'Author "' . $request->author_id . '" not found');
         }
         
-        return $this->index();
+        return redirect('admin-users');
     }
 
     /**
@@ -130,6 +130,6 @@ class UsersController extends Controller
             \Session::flash('error', 'Sorry. There was a problem.');
         }
 
-        return $this->index();
+        return redirect('admin-users');
     }
 }

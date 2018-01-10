@@ -73,7 +73,7 @@ class DashboardController extends Controller
                 'Sorry. There was a problem.');
         }
         
-        return view('dashboard');
+        return redirect('dashboard');
     }
 
     /**
