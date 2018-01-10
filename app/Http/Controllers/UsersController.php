@@ -67,16 +67,43 @@ class UsersController extends Controller
         ]);
 
         $user = User::findOrFail($user_id);
-        $input = $request->all();
-        $user->fill($input);
-        $user->admin = $input['admin'] === "true" ? 1 : 0;
-        $user->display_sales = $input['display_sales'] === "true" ? 1 : 0;
 
-        if ($user->save()) {
+        $author_found = true;
+        $updated = false;
+
+        if ($request->author === "true") {
+            $author = Author::find($request->author_id);
+            if (!$author) {
+                $author_found = false;
+            }
+        } else {
+            if (isset($user->author)) {
+                $user->author->user_id = null;
+                $user->author->save();
+            }
+        }
+
+        if ($author_found) {
+            $input = $request->all();
+            $user->fill($input);
+            $user->admin = $input['admin'] === "true" ? 1 : 0;
+            $user->display_sales = $input['display_sales'] === "true" ? 1 : 0;
+            $updated = $user->save();
+        }
+
+        if ($updated && $request->author === "true") {
+            $author->user_id = $user->user_id;
+            $author->save();
+        }
+        
+        if ($updated && $author_found) {
             $request->session()
                     ->flash('success','Thank you. The record has been saved.');
-        } else {
+        } elseif (!$registered && $author_found) {
             $request->session()->flash('error', 'Sorry. There was a problem.');
+        } elseif (!$registered && !$author_found) {
+            $request->session()->flash('error',
+                'Author "' . $request->author_id . '" not found');
         }
         
         return $this->index();
