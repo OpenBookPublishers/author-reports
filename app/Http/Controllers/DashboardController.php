@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\BookReport;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -74,5 +75,49 @@ class DashboardController extends Controller
         }
         
         return view('dashboard');
+    }
+
+    /**
+     * Show account information.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function account()
+    {
+        $user = Auth::user();
+        return view('account', compact('user'));
+    }
+
+    /**
+     * Save account information.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAccount(Request $request)
+    {
+        $user = Auth::user();
+
+        $this->validate($request, [
+            'name' => 'required',
+            'surname' => 'required',
+            'email' => ['email', 'required',
+                Rule::unique('user')->ignore($user->user_id, 'user_id') ],
+            'orcid' => 'nullable|min:20|max:40',
+            'twitter' => 'nullable',
+        ]);
+
+        $input = $request->all();
+        $user->fill($input);
+
+        if ($user->save()) {
+            $request->session()->flash('success',
+                'Thank you. Your account has been updated.');
+        } else {
+            $request->session()->flash('error',
+                'Sorry. There was a problem.');
+        }
+        
+        return redirect('dashboard');
     }
 }

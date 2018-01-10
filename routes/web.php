@@ -13,6 +13,7 @@
 
 Route::get('/', function() {return Redirect::to('dashboard');});
 Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/account', 'DashboardController@account')->name('account');
 Route::get('/book/report/html/{book_id}/{year?}',
            'BooksController@fullReportHtml')
        ->name('report');
@@ -34,6 +35,8 @@ Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
        ->middleware('admin')
        ->name('edit-user');
 
+Route::post('/account/update', 'DashboardController@updateAccount')
+       ->name('update-account');
 Route::post('/user/information/update', 'DashboardController@updateInfo')
        ->name('update-info');
 Route::post('/admin/user/edit/{user_id}', 'UsersController@update')
