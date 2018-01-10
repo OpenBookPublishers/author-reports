@@ -43,9 +43,16 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
+                                <a href="{{ route('account') }}">
+                                    <i class="fa fa-user" aria-hidden="true"></i>
+                                    Account
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i>
                                     Logout
                                 </a>
 
