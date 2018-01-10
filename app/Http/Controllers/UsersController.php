@@ -61,7 +61,7 @@ class UsersController extends Controller
                 Rule::unique('user')->ignore($user_id, 'user_id') ],
             'admin' => 'required',
             'display_sales' => 'required',
-            'orcid' => 'nullable|min:20|max:40',
+            'orcid' => 'nullable|min:19|max:40',
             'twitter' => 'nullable',
             'repositories' => 'nullable:'
         ]);

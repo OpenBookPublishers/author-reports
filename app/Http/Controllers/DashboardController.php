@@ -41,7 +41,7 @@ class DashboardController extends Controller
     {
         $this->validate($request, [
             'display_sales' => 'required',
-            'orcid' => 'nullable|min:20|max:40',
+            'orcid' => 'nullable|min:19|max:40',
             'twitter' => 'nullable',
             'repositories' => 'nullable:'
         ]);
@@ -103,7 +103,7 @@ class DashboardController extends Controller
             'surname' => 'required',
             'email' => ['email', 'required',
                 Rule::unique('user')->ignore($user->user_id, 'user_id') ],
-            'orcid' => 'nullable|min:20|max:40',
+            'orcid' => 'nullable|min:19|max:40',
             'twitter' => 'nullable',
         ]);
 
