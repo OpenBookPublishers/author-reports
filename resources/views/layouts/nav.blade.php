@@ -49,6 +49,12 @@
                                 </a>
                             </li>
                             <li>
+                                <a href="mailto:techsupport@openbookpublishers.com">
+                                    <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    Help & Feedback
+                                </a>
+                            </li>
+                            <li>
                                 <a href="{{ route('logout') }}"
                                     onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">
