@@ -134,10 +134,9 @@
                             </label>
 
                             <div class="col-md-6">
-                                <textarea id="repositories" class="form-control"
-                                          name="repositories">
-                                    {{ old('repositories') }}
-                                </textarea>
+                                <textarea id="repositories"
+                                          class="form-control"
+                                          name="repositories">{{ old('repositories') }}</textarea>
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
