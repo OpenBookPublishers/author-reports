@@ -78,7 +78,8 @@
         toggleAuthorSelect(is_author.prop('checked'));
 
         is_author.change(function() {
-            toggleAuthorSelect(this.value);
+            var val = (this.value == 'true');
+            toggleAuthorSelect(val);
         });
     });
 
