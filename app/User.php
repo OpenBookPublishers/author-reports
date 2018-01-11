@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\CustomResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -102,5 +103,17 @@ class User extends Authenticatable
     public function hasAccessToRoyaltyOfBook($book_id)
     {
         return $this->isAdmin() || $this->author->hasRoyaltyOfBook($book_id);
+    }
+
+    /**
+     * Send the password reset notification
+     *
+     * @see https://laracasts.com/discuss/channels/laravel/how-to-override-message-in-sendresetlinkemail-in-forgotpasswordcontroller
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }
