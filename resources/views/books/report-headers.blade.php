@@ -1,5 +1,5 @@
 @extends('layouts.dashboard-btn')
-@section('title', 'Readership Graphs')
+@section('title', 'Metrics Report')
 @section('secondary-btn')
     <a data-toggle="modal"
        data-target="#pdf-{{ $book->book_id }}"
