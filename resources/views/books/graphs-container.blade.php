@@ -7,11 +7,11 @@
                 </div>
 
                 <div class="panel-body">
-                    <p class="text-muted line-break-double">
-                        N.B. Only readership for which we have geographical information is displayed. "Other" represents other countries.
-                    </p>
                     @include('books.graphs')
                     <div style="clear: both;"></div>
+                    <p class="text-muted">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i> Only readership for which we have geographical information is displayed. "Other" represents other countries.
+                    </p>
                 </div>
             </div>
         </div>
