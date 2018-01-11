@@ -64,7 +64,7 @@
         $class = $platform === "Net Rev Total" || $platform === "Amount due"
                  ? "result right" : "right";
         $platform_class = $platform === "Net Rev Total"
-            || $platform === "Amount due" ? "result" : "";
+            || $platform === "Amount due" ? "result" : "platform";
         ?>
         <tr>
             <td class="{{ $platform_class }}">{{ $platform }}</td>
