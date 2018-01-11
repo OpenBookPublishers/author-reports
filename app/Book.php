@@ -187,6 +187,23 @@ class Book extends Model
     }
 
     /**
+     * Determine if we have authors' agreement to display sales data publicly.
+     *
+     * @return boolean
+     */
+    public function areSalesPublic()
+    {
+        $public = true;
+        foreach ($this->authors as $author) {
+            if (isset($author->user)
+                && $author->user->wantsSalesDataPrivate()) {
+                $public = false;
+            }
+        }
+        return $public;
+    }
+
+    /**
      * Determine if this book has been published
      *
      * @return boolean

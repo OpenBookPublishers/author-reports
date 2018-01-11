@@ -42,6 +42,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine whether this user wants to keep sales data private.
+     *
+     * @return boolean
+     */
+    public function wantsSalesDataPrivate()
+    {
+        return $this->display_sales === 0 ? true : false;
+    }
+
+    /**
      * Determine if the user is an author
      *
      * @return boolean
