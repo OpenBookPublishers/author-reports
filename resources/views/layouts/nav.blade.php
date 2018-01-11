@@ -28,7 +28,7 @@
                 <!-- Authentication Links -->
                 @if (Auth::guest())
                     <li>
-                        <a href="{{ route('login') }}">Login</a>
+                        <a href="{{ route('login') }}">Author Login</a>
                     </li>
                 @else
                     <li class="dropdown">
