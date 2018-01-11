@@ -91,6 +91,17 @@ class BooksController extends Controller
             Session::flash('info', $book->getNotPublishedMessage());
             return back();
         }
+
+        $book->loadCountryReadership();
+        $book->loadContinentReadership();
+        $this->graph_data['countries']['data'] = $book->countries;
+        $this->graph_data['countries']['total']
+            = $this->graph_data['continents']['total']
+            = $book->total_country_readership;
+        $this->graph_data['continents']['data'] = $book->continents;
+        $graph_data = $this->graph_data;
+        $colours = $this->colours;
+
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
         $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
@@ -98,7 +109,8 @@ class BooksController extends Controller
         $is_public = true;
 
         return view('books.public-report-headers',
-            compact('book', 'data', 'year', 'is_pdf', 'is_public','map_url'));
+            compact('book', 'data', 'year', 'is_pdf', 'is_public',
+                    'map_url', 'graph_data', 'colours'));
     }
 
     /**
@@ -146,11 +158,11 @@ class BooksController extends Controller
             = $this->graph_data['continents']['total']
             = $book->total_country_readership;
         $this->graph_data['continents']['data'] = $book->continents;
-        $data = $this->graph_data;
+        $graph_data = $this->graph_data;
         $colours = $this->colours;
         
         return view('books.graphs-headers',
-            compact('book', 'data', 'colours'));
+            compact('book', 'graph_data', 'colours'));
     }
 
     /**

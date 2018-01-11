@@ -2,7 +2,7 @@
 <link href="{{ mix('css/pie-graph.css') }}" rel="stylesheet">
 @endsection
 
-@foreach ($data as $graph)
+@foreach ($graph_data as $graph)
 <div class="graph-wrap">
     <p class="section-header line-break-double">
         {!! $graph['title'] !!}
