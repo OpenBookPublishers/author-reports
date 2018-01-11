@@ -17,6 +17,7 @@
                                 <th>Title</th>
                                 <th>DOI</th>
                                 <th>Public Sales</th>
+                                <th>Publication Date</th>
                                 <th>Authors</th>
                                 <th></th>
                             </tr>
@@ -27,6 +28,9 @@
                                 <td>
                                     {{ $book->areSalesPublic()
                                     ? "Yes" : "No" }}
+                                </td>
+                                <td>
+                                    {{ $book->isPublished()? Carbon\Carbon::parse($book->publication_date)->format('M Y') : "" }}
                                 </td>
                                 <td>
                                     <ul>
