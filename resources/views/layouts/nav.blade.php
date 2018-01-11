@@ -13,8 +13,11 @@
             </button>
 
             <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('/') }}">
-            </a>
+            @if (Auth::guest())
+            <a class="navbar-brand" href="{{ url('//openbookpublishers.com') }}"></a>
+            @else
+            <a class="navbar-brand" href="{{ url('/') }}"></a>
+            @endif
         </div>
 
         <div class="collapse navbar-collapse" id="app-navbar-collapse">
