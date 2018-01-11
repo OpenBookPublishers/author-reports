@@ -72,16 +72,6 @@ class BooksController extends Controller
     ];
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Render an interface to manage books
      *
      * @return Response
@@ -90,6 +80,25 @@ class BooksController extends Controller
     {
         $books = Book::all();
         return view('books.index', compact('books'));
+    }
+
+    public function publicReport($doi_prefix, $doi_suffix, $year = null)
+    {
+        $doi = $doi_prefix . "/" . $doi_suffix;
+        $book = Book::where('doi', '=', $doi)->firstOrFail();
+
+        if (!$book->isPublished()) {
+            Session::flash('info', $book->getNotPublishedMessage());
+            return back();
+        }
+        $year = $year !== null ? (int) $year : null;
+        $data = $this->getTableData($book, $year);
+        $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
+        $is_pdf = false;
+        $is_public = true;
+
+        return view('books.public-report-headers',
+            compact('book', 'data', 'year', 'is_pdf', 'is_public','map_url'));
     }
 
     /**
@@ -106,7 +115,9 @@ class BooksController extends Controller
         $this->table_data['downloads']['data'] = $book->downloads;
         $data['downloads'] = $this->table_data['downloads'];
         
-        if (Auth::user()->hasAccessToSalesOfBook($book->book_id)) {
+        // or public
+        if ($book->areSalesPublic() || (Auth::user() !== null
+            && Auth::user()->hasAccessToSalesOfBook($book->book_id))) {
             $this->table_data['sales']['data'] = $book->sales;
             $data['sales'] = $this->table_data['sales'];
         }
@@ -158,7 +169,7 @@ class BooksController extends Controller
 
         $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
         
-        return view('books.map', compact('book', 'map_url'));
+        return view('books.map-headers', compact('book', 'map_url'));
     }
 
     /**
@@ -178,9 +189,10 @@ class BooksController extends Controller
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
         $is_pdf = false;
+        $is_public = false;
 
         return view('books.report-headers',
-            compact('book', 'data', 'year', 'is_pdf'));
+            compact('book', 'data', 'year', 'is_pdf', 'is_public'));
     }
 
     /**
@@ -200,9 +212,10 @@ class BooksController extends Controller
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
         $is_pdf = true;
+        $is_public = false;
         
         return View::make('books.report-html',
-            compact('book', 'data', 'year', 'is_pdf'));
+            compact('book', 'data', 'year', 'is_pdf', 'is_public'));
     }
 
     /**
@@ -212,7 +225,7 @@ class BooksController extends Controller
      * @param int $year
      * @return string
      */
-    public function fullReportPdf($book_id, $year = null)
+    private function fullReportPdf($book_id, $year = null)
     {
         $dompdf = new Dompdf;
         //$dompdf->set_base_path();

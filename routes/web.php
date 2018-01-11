@@ -12,18 +12,30 @@
 */
 
 Route::get('/', function() {return Redirect::to('dashboard');});
-Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-Route::get('/account', 'DashboardController@account')->name('account');
+Route::get('/dashboard', 'DashboardController@index')
+    ->middleware('auth')
+    ->name('dashboard');
+Route::get('/account', 'DashboardController@account')
+    ->middleware('auth')
+    ->name('account');
 Route::get('/book/report/html/{book_id}/{year?}',
            'BooksController@fullReportHtml')
-       ->name('report');
+    ->middleware('auth')
+    ->name('report');
 Route::get('/book/report/pdf/{book_id}/{year?}',
            'BooksController@downloadFullReport')
-       ->name('download-report');
+    ->middleware('auth')
+    ->name('download-report');
 Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
-       ->name('graphs');
+    ->middleware('auth')
+    ->name('graphs');
 Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')
-       ->name('map');
+    ->middleware('auth')
+    ->name('map');
+
+Route::get('/public/report/{doi_prefix}/{doi_suffix}/{year?}',
+           'BooksController@publicReport')
+       ->name('public-report');
 
 Route::get('/admin/books', 'BooksController@index')
     ->middleware('admin')
@@ -36,11 +48,14 @@ Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
        ->name('edit-user');
 
 Route::post('/account/update', 'DashboardController@updateAccount')
-       ->name('update-account');
+    ->middleware('auth')
+    ->name('update-account');
 Route::post('/password/update', 'DashboardController@updatePassword')
-       ->name('update-password');
+    ->middleware('auth')
+    ->name('update-password');
 Route::post('/user/information/update', 'DashboardController@updateInfo')
-       ->name('update-info');
+    ->middleware('auth')
+    ->name('update-info');
 Route::post('/admin/user/edit/{user_id}', 'UsersController@update')
        ->middleware('admin')
        ->name('update-user');
