@@ -34,12 +34,16 @@
               <a href="{{ URL::route('public-report',
                           ['doi_prefix' => $book->getDoiPrefix(),
                            'doi_suffix' => $book->getDoiSuffix(),
-                           'year' => $year]) }}">
+                           'year' => $year]) }}"
+                 data-toggle="tooltip" data-placement="bottom"
+                 title="Click here to view {{ $year }}'s monthly breakdown">
                 {{ $year }}
               </a>
               @else
               <a href="{{ URL::route('report', ['book_id' => $book->book_id,
-                                                'year' => $year]) }}">
+                                                'year' => $year]) }}"
+                 data-toggle="tooltip" data-placement="bottom"
+                 title="Click here to view {{ $year }}'s monthly breakdown">
                 {{ $year }}
               </a>
               @endif
@@ -110,5 +114,6 @@
 <script>
     $(function () {
       $('[data-toggle="popover"]').popover({html: true});
+      $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
