@@ -225,6 +225,26 @@ class Book extends Model
     }
 
     /**
+     * Get the DOI prefix
+     *
+     * @return string
+     */
+    public function getDoiPrefix()
+    {
+        return explode("/", $this->doi)[0];
+    }
+
+    /**
+     * Get the DOI suffix
+     *
+     * @return string
+     */
+    public function getDoiSuffix()
+    {
+        return explode("/", $this->doi)[1];
+    }
+
+    /**
      * Remove special characters from book title
      * and replace spaces with underscores.
      *
