@@ -77,7 +77,7 @@
             $table['years_total'][$year] += $stat;
             ?>
             <td class="{{ $class }}">
-                <!-- FIXME hack for royalties paid -->
+                <?php // FIXME hack for royalties paid ?>
                 @if ($platform !== "Amount due")
                     @if (is_float($stat))
                     {{ number_format($stat, 2, '.', '') }}
