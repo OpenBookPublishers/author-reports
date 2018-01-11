@@ -79,6 +79,14 @@
     padding: 2px;
   }
 
+  .legend {
+    width: 75%;
+  }
+
+  .graph-wrap:nth-of-type(even) > .legend {
+    width: 50%;
+  }
+
   #legend tr:nth-child(1) {
     font-weight: bold;
   }
@@ -96,7 +104,7 @@
   .graph-wrap {
     position: relative;
     float: left;
-    height: 470px;
+    height: 405px;
     margin: 2% 0 0 10%;
   }
 

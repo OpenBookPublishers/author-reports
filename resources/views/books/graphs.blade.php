@@ -53,7 +53,7 @@
     ?>
     @endforeach
 
-    <table id="legend">
+    <table id="legend" class="legend">
         <tr>
             <td></td>
             <td>{{ $graph['column'] }}</td>
