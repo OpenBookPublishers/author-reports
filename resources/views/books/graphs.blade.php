@@ -6,6 +6,7 @@
 <div class="graph-wrap">
     <p class="section-header line-break-double">
         {!! $graph['title'] !!}
+        @include('readership-popover')
     </p>
     <div class="line-break"> </div>
 
