@@ -3,21 +3,11 @@
         {{ $table['title'] }}
     @else
         @if (in_array($table['title'], ["Online Readership", "Free Downloads"]))
-        {{ $table['title'] }}
-        
-        <a tabindex="0" role="button" data-toggle="popover"
-           data-trigger="focus" title="Readership Statistics"
-           data-content="Find out <a href='https://www.openbookpublishers.com/section/84/' target='_blank'>how we collect our readership statistics</a>.">
-            <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
-        </a> 
+            {{ $table['title'] }}
+            @include('readership-popover')
         @elseif ($table['title'] === "Number of Sales")
-        {{ $table['title'] }}
-
-        <a tabindex="0" role="button" data-toggle="popover"
-           data-trigger="focus" title="Sales Update Frequency"
-           data-content="We update our sales figures quaterly. Some data may be missing for the last few months.">
-            <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
-        </a> 
+            {{ $table['title'] }}
+            @include('sales-popover')         
         @endif
     @endif
 </p>
@@ -113,7 +103,6 @@
 </div>
 <script>
     $(function () {
-      $('[data-toggle="popover"]').popover({html: true});
       $('[data-toggle="tooltip"]').tooltip();
     });
 </script>
