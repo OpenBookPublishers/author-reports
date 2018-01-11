@@ -16,6 +16,7 @@
                             <tr>
                                 <th>Title</th>
                                 <th>DOI</th>
+                                <th>Public Sales</th>
                                 <th>Authors</th>
                                 <th></th>
                             </tr>
@@ -24,9 +25,23 @@
                                 <td>{{ $book->title }}</td>
                                 <td>{{ $book->doi }}</td>
                                 <td>
+                                    {{ $book->areSalesPublic()
+                                    ? "Yes" : "No" }}
+                                </td>
+                                <td>
                                     <ul>
                                     @foreach ($book->authors as $author)
+                                        @if (isset($author->user))
+                                        <li>
+                                            <a href="{{ route('edit-user',
+                                            ['user_id' => 
+                                              $author->user->user_id]) }}">
+                                            {{ $author->author_name }}
+                                            </a>
+                                        </li>
+                                        @else
                                         <li>{{ $author->author_name }}</li>
+                                        @endif
                                     @endforeach
                                     </ul>
                                 </td>
