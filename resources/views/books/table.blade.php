@@ -1,4 +1,26 @@
-<p class="section-header line-break">{{ $table['title'] }}</p>
+<p class="section-header line-break">
+    @if ($is_pdf)
+        {{ $table['title'] }}
+    @else
+        @if (in_array($table['title'], ["Online Readership", "Free Downloads"]))
+        {{ $table['title'] }}
+        
+        <a tabindex="0" role="button" data-toggle="popover"
+           data-trigger="focus" title="Readership Statistics"
+           data-content="Find out <a href='https://www.openbookpublishers.com/section/84/' target='_blank'>how we collect our readership statistics</a>.">
+            <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
+        </a> 
+        @elseif ($table['title'] === "Number of Sales")
+        {{ $table['title'] }}
+
+        <a tabindex="0" role="button" data-toggle="popover"
+           data-trigger="focus" title="Sales Update Frequency"
+           data-content="We update our sales figures quaterly. Some data may be missing for the last few months.">
+            <i class="fa fa-lg fa-info-circle" aria-hidden="true"></i>
+        </a> 
+        @endif
+    @endif
+</p>
 <div class="table-responsive">
     <table class="report-table table">
         <tr>
@@ -8,6 +30,13 @@
           <th class="border right">
               @if ($is_pdf)
               {{ $year }}
+              @elseif ($is_public)
+              <a href="{{ URL::route('public-report',
+                          ['doi_prefix' => $book->getDoiPrefix(),
+                           'doi_suffix' => $book->getDoiSuffix(),
+                           'year' => $year]) }}">
+                {{ $year }}
+              </a>
               @else
               <a href="{{ URL::route('report', ['book_id' => $book->book_id,
                                                 'year' => $year]) }}">
@@ -78,3 +107,8 @@
         @endif
     </table>
 </div>
+<script>
+    $(function () {
+      $('[data-toggle="popover"]').popover({html: true});
+    });
+</script>
