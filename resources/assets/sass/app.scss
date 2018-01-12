@@ -14,6 +14,9 @@
 // Bootstrap-select
 @import "node_modules/bootstrap-select/sass/bootstrap-select";
 
+// Media queries
+@import "media";
+
 .navbar-brand {
     background-image: url("/pictures/logo.gif");
     background-repeat: no-repeat;
