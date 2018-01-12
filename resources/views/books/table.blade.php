@@ -7,7 +7,7 @@
             @include('readership-popover')
         @elseif ($table['title'] === "Number of Sales")
             {{ $table['title'] }}
-            @include('sales-popover')         
+            @include('sales-popover')
         @endif
     @endif
 </p>
@@ -44,7 +44,7 @@
           <th class="border right">
               {{ Carbon\Carbon::createFromFormat("m", $month)->format('M') }}
           </th>
-            @endforeach        
+            @endforeach
           @endif
           <th class="border right">Totals</th>
         </tr>
