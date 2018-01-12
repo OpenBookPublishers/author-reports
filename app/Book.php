@@ -70,7 +70,7 @@ class Book extends Model
         $royalties['Non-sales costs']  = $this->getNonSalesCostsByYear();
         $royalties['Net Rev Total']    = [];
 
-        foreach ($this->years_active as $y) {
+        foreach ($this->years_active as $y => $months) {
             $salesThisYear = $this->getTotalSalesByYear($y);
             $total_sales += $salesThisYear;
 
@@ -388,7 +388,7 @@ class Book extends Model
     private function getTotalNetRevenueByYear()
     {
         $revenue = [];
-        foreach ($this->years_active as $y) {
+        foreach ($this->years_active as $y => $months) {
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
@@ -409,7 +409,7 @@ class Book extends Model
     private function getTotalRevenueByYear()
     {
         $revenue = [];
-        foreach ($this->years_active as $y) {
+        foreach ($this->years_active as $y => $months) {
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
@@ -430,7 +430,7 @@ class Book extends Model
     private function getNonSalesIncomeByYear()
     {
         $revenue = [];
-        foreach ($this->years_active as $y) {
+        foreach ($this->years_active as $y => $months) {
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
@@ -451,7 +451,7 @@ class Book extends Model
     private function getNonSalesCostsByYear()
     {
         $revenue = [];
-        foreach ($this->years_active as $y) {
+        foreach ($this->years_active as $y => $months) {
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
