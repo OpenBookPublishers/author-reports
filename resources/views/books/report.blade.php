@@ -5,7 +5,7 @@
 </style>
 
 <div class="report-wrapper">
-    @foreach ($data as $table)
+    @foreach ($data as $name => $table)
         @if (!empty($table['data']))
             @include('books.table')
         @endif

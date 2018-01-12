@@ -3,10 +3,16 @@
         {{ $table['title'] }}
     @else
         {{ $table['title'] }}
-        @if (in_array($table['title'], ["Online Readership", "Free Downloads"]))
+        @if (in_array($name, ["readership", "downloads"]))
             @include('readership-popover')
-        @elseif ($table['title'] === "Number of Sales")
+        @elseif ($name === "sales")
             @include('sales-popover')
+            @if ($is_public && !$book->areSalesPublic())
+                @include('private-popover')
+            @endif
+        @elseif (str_replace(range(0,9), '', $name) === "royalties"
+                 && $is_public)
+            @include('private-popover')
         @endif
     @endif
 </p>
