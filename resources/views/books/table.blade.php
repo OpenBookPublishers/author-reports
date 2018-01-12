@@ -2,11 +2,10 @@
     @if ($is_pdf)
         {{ $table['title'] }}
     @else
+        {{ $table['title'] }}
         @if (in_array($table['title'], ["Online Readership", "Free Downloads"]))
-            {{ $table['title'] }}
             @include('readership-popover')
         @elseif ($table['title'] === "Number of Sales")
-            {{ $table['title'] }}
             @include('sales-popover')
         @endif
     @endif
