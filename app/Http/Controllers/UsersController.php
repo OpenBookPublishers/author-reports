@@ -132,4 +132,23 @@ class UsersController extends Controller
 
         return redirect('/admin/users');
     }
+
+    /**
+     * Send a create password link to the given user.
+     *
+     * @see https://laracasts.com/discuss/channels/laravel/get-a-password-reset-token
+     * @param  int $user_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function sendCreatePasswordEmail($user_id)
+    {
+        $user = User::findOrFail($user_id);
+
+        $user->sendNewAccountNotification(
+            app('auth.password.broker')->createToken($user)
+        );
+
+        \Session::flash('success', 'New account notification has been sent.');
+        return redirect('/admin/users');
+    }
 }

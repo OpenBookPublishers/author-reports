@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Notifications\CreatePassword as CreatePasswordNotification;
 use App\Notifications\CustomResetPassword as ResetPasswordNotification;
 
 class User extends Authenticatable
@@ -115,5 +116,18 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Notify the user that an account has been created, with a link
+     * to create a password.
+     *
+     * @see https://laravel.com/docs/5.4/notifications#sending-notifications
+     * @param string $token
+     * @return void
+     */
+    public function sendNewAccountNotification($token)
+    {
+        $this->notify(new CreatePasswordNotification($token));
     }
 }
