@@ -62,5 +62,9 @@ Route::post('/admin/user/edit/{user_id}', 'UsersController@update')
 Route::post('/admin/user/delete/{user_id}', 'UsersController@delete')
        ->middleware('admin')
        ->name('delete-user');
+Route::post('/admin/user/notify/{user_id}',
+            'UsersController@sendCreatePasswordEmail')
+       ->middleware('admin')
+       ->name('send-account-notification');
 
 Auth::routes();

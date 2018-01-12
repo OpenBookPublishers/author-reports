@@ -2,10 +2,19 @@
 @section('title', 'Edit User')
 
 @section('secondary-btn')
-    <a id="delete-user-btn" class="btn btn-danger pointer pull-right">
-        <i class="fa fa-trash" aria-hidden="true"></i>
-        Delete User
-    </a>
+    <form action="{{ route('send-account-notification',
+                            ['user_id' => $user->user_id]) }}" method="POST">
+        {{ csrf_field() }}
+        <button type="submit" class="btn btn-success" style="margin-right: 20px">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            Send "New Account" Email
+        </button>
+    
+        <a id="delete-user-btn" class="btn btn-danger pointer pull-right">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            Delete User
+        </a>
+    </form>
 <script>
     $(document).ready(function() {
         $('#delete-user-btn').click(function() {
