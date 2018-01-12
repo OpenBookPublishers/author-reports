@@ -92,7 +92,8 @@ class User extends Authenticatable
     public function hasAccessToSalesOfBook($book_id)
     {
         return $this->isAdmin()
-            || $this->author->isContributorOfBook($book_id);
+            || ($this->author !== null
+                && $this->author->isContributorOfBook($book_id));
     }
 
     /**
@@ -103,7 +104,9 @@ class User extends Authenticatable
      */
     public function hasAccessToRoyaltyOfBook($book_id)
     {
-        return $this->isAdmin() || $this->author->hasRoyaltyOfBook($book_id);
+        return $this->isAdmin()
+            || ($this->author !== null
+                && $this->author->hasRoyaltyOfBook($book_id));
     }
 
     /**
