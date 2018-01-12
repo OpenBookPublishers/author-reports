@@ -127,7 +127,7 @@ class BooksController extends Controller
         $this->table_data['downloads']['data'] = $book->downloads;
         $data['downloads'] = $this->table_data['downloads'];
         
-        // or public
+        // include sales if they are public or if user has access to them
         if ($book->areSalesPublic() || (Auth::user() !== null
             && Auth::user()->hasAccessToSalesOfBook($book->book_id))) {
             $this->table_data['sales']['data'] = $book->sales;
