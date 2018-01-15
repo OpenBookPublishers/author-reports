@@ -127,5 +127,32 @@ class Author extends Model
                        FILTER_FLAG_STRIP_HIGH);
         return str_replace(' ', '_', $sane_name);
     }
-    
+
+    public function loadRoyalties()
+    {
+        $royalties = [];
+        foreach ($this->royaltyRecipients as $recipient) {
+            $result
+              = $recipient->royaltyAgreement->calculateTotalRoyalties();
+            $result['base_unit'] = $recipient
+                ->royaltyAgreement->royaltyRate->base_unit;
+            $result['threshold_unit'] = $recipient
+                ->royaltyAgreement->royaltyRate->threshold_unit;
+            $result['rate'] = $recipient
+                ->royaltyAgreement->royaltyRate->rate;
+            $result['royalty_agreement_id'] = $recipient
+                ->royaltyAgreement->royalty_agreement_id;
+            $royalties[] = $result;
+        }
+        $this->royalties_arising = 0.00;
+        $this->royalties_paid = 0.00;
+        $this->amount_due = 0.00;
+        foreach ($royalties as $royalty) {
+            $this->royalties_arising += $royalty['Royalties arising'];
+            $this->royalties_paid += $royalty['Royalties paid'];
+        }
+        $this->amount_due = $this->royalties_arising
+                - $this->royalties_paid;
+        $this->royalties = $royalties;
+    }
 }

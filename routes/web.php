@@ -46,6 +46,13 @@ Route::get('/admin/users', 'UsersController@index')
 Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
        ->middleware('admin')
        ->name('edit-user');
+Route::get('/admin/royalties', 'RoyaltiesController@index')
+      ->middleware('admin')
+      ->name('admin-royalties');
+Route::get('/admin/royalties/report/pdf/{author_id}',
+           'RoyaltiesController@downloadRoyaltyReport')
+      ->middleware('admin')
+      ->name('admin-royalties-pdf');
 
 Route::post('/account/update', 'DashboardController@updateAccount')
     ->middleware('auth')
