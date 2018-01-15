@@ -38,7 +38,7 @@ class Author extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\belongsToMany
      */
-    public function royaltyRecipient()
+    public function royaltyRecipients()
     {
         return $this->belongsToMany('App\RoyaltyRecipient',
             'royalty_recipient_author',
