@@ -20,7 +20,8 @@
     <table class="report-table table">
         <tr>
           <th class="platform border">{{ $table['column'] }}</th>
-          @if ($year === null)
+          @if ($year === null 
+                && str_replace(range(0,9), '', $name) !== "royalties")
             @foreach ($book->years_active as $year => $months)
           <th class="border right">
               @if ($is_pdf)
@@ -42,6 +43,12 @@
                 {{ $year }}
               </a>
               @endif
+          </th>
+            @endforeach
+          @elseif (str_replace(range(0,9), '', $name) === "royalties")
+            @foreach ($book->years_active as $year => $months)
+          <th class="border right">
+              {{ $year }}
           </th>
             @endforeach
           @else
