@@ -58,6 +58,37 @@ class RoyaltiesController extends Controller
      * @param int $author_id
      * @return Illuminate\Support\Facades\View
      */
+    public function royaltyReportHtml($author_id)
+    {
+        $author = Author::findOrFail($author_id);
+        if (!$author->receivesRoyalties()) {
+            Session::flash('info',
+                'This author does not have any royalty agreement.');
+            return back();
+        }
+
+        $year = null;
+        $is_pdf = true;
+        $is_public = false;
+        $books = [];
+        foreach ($author->royaltyRecipients as $recipient) {
+            $agreement = $recipient->royaltyAgreement;
+            $book = $agreement->book;
+            $book->years_active = $book->getYearsActive();
+            $book->data = $this->getTableData($book, $agreement);
+            $books[] = $book;
+        }
+        
+        return View::make('royalties.report-headers',
+            compact('author', 'books', 'year', 'is_pdf', 'is_public'));
+    }
+
+    /**
+     * Generate the report in HTML
+     *
+     * @param int $author_id
+     * @return Illuminate\Support\Facades\View
+     */
     public function royaltyReport($author_id)
     {
         $author = Author::findOrFail($author_id);

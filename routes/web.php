@@ -53,6 +53,10 @@ Route::get('/admin/royalties/report/pdf/{author_id}',
            'RoyaltiesController@downloadRoyaltyReport')
       ->middleware('admin')
       ->name('admin-royalties-pdf');
+Route::get('/admin/royalties/report/html/{author_id}',
+           'RoyaltiesController@royaltyReportHtml')
+      ->middleware('admin')
+      ->name('admin-royalties-html');
 
 Route::post('/account/update', 'DashboardController@updateAccount')
     ->middleware('auth')

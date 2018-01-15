@@ -61,14 +61,46 @@
                             <td class="{{ $author->amount_due > 0
                             ? "warning" : "" }}">{{ $author->amount_due }}</td>
                             <td>
-                                <a href="{{ route('admin-royalties-pdf',
-                                        ['author_id' => 
-                                        $author->author_id]) }}"
-                                        class="btn btn-default">
-                                    <i class="fa fa-file-pdf-o"
-                                   aria-hidden="true"></i>
-                                    Report
-                                </a>
+                                <div class="dropdown">
+                                        <button class="btn btn-default
+                                                       dropdown-toggle"
+                                                type="button"
+                                                id="dropdownMenu1"
+                                                data-toggle="dropdown"
+                                                aria-haspopup="true"
+                                                aria-expanded="true">
+                                            Actions 
+                                            <span class="caret"></span>
+                                        </button>
+
+                                        <ul class="dropdown-menu
+                                                   dropdown-menu-right"
+                                           aria-labelledby="dropdownMenu1">
+                                            <li>
+                                                <a href="{{ route(
+                                                    'admin-royalties-html',
+                                                     ['author_id' => 
+                                                $author->author_id]) }}">
+                                                    <i class="fa
+                                                       fa-file-text-o"
+                                                   aria-hidden="true"></i>
+                                                    Royalties Report
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <a href="{{ route(
+                                                    'admin-royalties-pdf',
+                                                     ['author_id' => 
+                                                  $author->author_id]) }}">
+                                                    <i class="fa
+                                                       fa-file-pdf-o"
+                                                   aria-hidden="true"></i>
+                                                    Royalties Report (PDF)
+                                                </a>
+                                            </li>
+                                        </ul>
+                                </div>
                             </td>
                         </tr>
                         @if (count($author->royalties) > 1)
