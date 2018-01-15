@@ -47,6 +47,16 @@ class Author extends Model
     }
 
     /**
+     * Determine if this author has a royalty agreement.
+     *
+     * @return bool
+     */
+    public function receivesRoyalties()
+    {
+        return $this->royaltyRecipients !== null;
+    }
+
+    /**
      * Determine if this author has contributed to the give book
      *
      * @param int $book_id
@@ -104,4 +114,18 @@ class Author extends Model
             ->orderBy('author_name')
             ->get();
     }
+
+    /**
+     * Remove special characters from author's name
+     * and replace spaces with underscores.
+     *
+     * @return string
+     */
+    public function sanitisedName()
+    {
+        $sane_name = filter_var($this->author_name, FILTER_SANITIZE_STRING,
+                       FILTER_FLAG_STRIP_HIGH);
+        return str_replace(' ', '_', $sane_name);
+    }
+    
 }
