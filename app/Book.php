@@ -88,10 +88,39 @@ class Book extends Model
             $royalties['Royalties arising'][$y] += $royalty;
 
             $royalties['Royalties paid'][$y] = $agreement->royaltyRecipient
-                ->getTotalPayments($y);
+                ->getTotalPaymentsInYear($y);
             $royalties['Amount due'][$y] = $royalties['Royalties arising'][$y]
                 - $royalties['Royalties paid'][$y];
         }
+
+        return $royalties;
+    }
+
+    /**
+     * 
+     *
+     * @todo replace env array with proper table
+     * @param App\RoyaltyAgreement $agreement
+     */
+    public function calculateTotalRoyaltiesInAgreement($agreement)
+    {
+        $royalties   = [];
+        $total_sales = $this->getTotalSales();
+        $royalties['Net Sales Rev']    = $this->getTotalNetRevenue();
+        $royalties['Non-sales income'] = $this->getNonSalesIncome();
+        $royalties['Non-sales costs']  = $this->getNonSalesCosts();
+        $royalties['Net Rev Total'] = $royalties['Non-sales income']
+            + $royalties['Non-sales costs']
+            + $royalties['Net Sales Rev'];
+        $royalties['Royalties arising']=$agreement->royaltyRate->calculate(
+                $royalties['Net Rev Total'],
+                $royalties['Net Sales Rev'],
+                $total_sales
+            );
+        $royalties['Royalties paid'] = $agreement->royaltyRecipient
+                ->getTotalPayments();
+        $royalties['Amount due'] = $royalties['Royalties arising']
+                - $royalties['Royalties paid'];
 
         return $royalties;
     }
@@ -393,7 +422,7 @@ class Book extends Model
                 $revenue[$y] = 0.00;
             }
             
-            $total = $this->getTotalNetRevenue($y);
+            $total = $this->getTotalNetRevenueInYear($y);
             $revenue[$y] += $total;
         }
         
@@ -469,13 +498,32 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getTotalNetRevenue($year)
+    private function getTotalNetRevenueInYear($year)
     {
         $result =  DB::table('sale')
             ->join('volume', 'sale.volume_id', '=', 'volume.volume_id')
             ->join('book', 'volume.book_id', '=', 'book.book_id')
             ->select(DB::raw('SUM(`net_revenue`) as total'))
             ->whereYear('sale_date', $year)
+            ->where('doi', '=', $this->doi)
+            ->first();
+
+        return $result->total !== null ? (float) $result->total : 0.00;
+
+    }
+
+    /**
+     * Obtain the total net revenue for this book.
+     *
+     * @param int $year
+     * @return float
+     */
+    private function getTotalNetRevenue()
+    {
+        $result =  DB::table('sale')
+            ->join('volume', 'sale.volume_id', '=', 'volume.volume_id')
+            ->join('book', 'volume.book_id', '=', 'book.book_id')
+            ->select(DB::raw('SUM(`net_revenue`) as total'))
             ->where('doi', '=', $this->doi)
             ->first();
 
@@ -510,7 +558,7 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getNonSalesIncome($year)
+    private function getNonSalesIncome($year = null)
     {
         return $this->getSubventions("income", $year);
 
@@ -523,7 +571,7 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getNonSalesCosts($year)
+    private function getNonSalesCosts($year = null)
     {
         return $this->getSubventions("cost", $year);
 
@@ -537,7 +585,7 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getSubventions($type, $year)
+    private function getSubventions($type, $year = null)
     {
         switch ($type) {
             case "cost":
@@ -549,6 +597,13 @@ class Book extends Model
                 break;
         }
  
+        return $year === null
+            ? $this->getTotalSubventions($symbol)
+            : $this->getSubventionsInYear($symbol, $year);  
+    }
+
+    private function getSubventionsInYear($symbol, $year)
+    {
         $result =  DB::table('subvention')
             ->join('book', 'book.book_id', '=', 'subvention.book_id')
             ->select(DB::raw('SUM(`subvention_value`) as total'))
@@ -557,9 +612,21 @@ class Book extends Model
                 ['subvention_value', $symbol, 0],
                 ['doi', '=', $this->doi]])
             ->first();
-        
-        return $result->total !== null ? (float) $result->total : 0.00;
 
+        return $result->total !== null ? (float) $result->total : 0.00;
+    }
+
+    private function getTotalSubventions($symbol)
+    {
+        $result =  DB::table('subvention')
+            ->join('book', 'book.book_id', '=', 'subvention.book_id')
+            ->select(DB::raw('SUM(`subvention_value`) as total'))
+            ->where([
+                ['subvention_value', $symbol, 0],
+                ['doi', '=', $this->doi]])
+            ->first();
+
+        return $result->total !== null ? (float) $result->total : 0.00;
     }
     
     private function getReadershipPerCountry()
@@ -717,6 +784,24 @@ class Book extends Model
             ->join('book','volume.book_id', '=', 'book.book_id')
             ->select( DB::raw('SUM(`sales_units`) as sales'))
             ->whereYear('sale_date', $year)
+            ->where('doi', '=', $this->doi)
+            ->first();
+        
+        return $result->sales !== null ? $result->sales : 0;
+    }
+
+    /**
+     * Obtain the total this books sales in a given year
+     *
+     * @param int $year
+     * @return int
+     */
+    private function getTotalSales()
+    {
+        $result = DB::table('sale')
+            ->join('volume','sale.volume_id', '=', 'volume.volume_id')
+            ->join('book','volume.book_id', '=', 'book.book_id')
+            ->select( DB::raw('SUM(`sales_units`) as sales'))
             ->where('doi', '=', $this->doi)
             ->first();
         
