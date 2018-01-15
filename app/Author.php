@@ -2,6 +2,7 @@
 
 namespace App;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 
 class Author extends Model
@@ -91,5 +92,16 @@ class Author extends Model
         }
         
         return false;
+    }
+
+    public static function allWithRoyalties()
+    {
+        $author_ids = DB::table('royalty_recipient_author')
+            ->select(DB::raw('DISTINCT(author_id) AS author_id'))
+            ->pluck('author_id');
+
+        return self::whereIn('author_id', $author_ids)
+            ->orderBy('author_name')
+            ->get();
     }
 }
