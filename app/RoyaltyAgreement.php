@@ -17,7 +17,7 @@ class RoyaltyAgreement extends Model
      */
     public function book()
     {
-        return $this->belongsTo('App\Book');
+        return $this->belongsTo('App\Book', 'book_id');
     }
 
     /**
@@ -38,6 +38,11 @@ class RoyaltyAgreement extends Model
     public function royaltyRecipient()
     {
         return $this->hasOne('App\RoyaltyRecipient', 'royalty_agreement_id');
+    }
+
+    public function calculateTotalRoyalties()
+    {
+        return $this->book->calculateTotalRoyaltiesInAgreement($this);
     }
 }
 
