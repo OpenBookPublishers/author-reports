@@ -50,8 +50,8 @@ class CreatePassword extends Notification
     {
         return (new MailMessage)
             ->subject('Author account created - Open Book Publishers')
-            ->line('We have just made live a new reporting web application for OBP\' authors, which allows you to query readership and sales data for your publications at any time.')
-            ->line('An account has been created for you, using the same email address to which this message has been sent. Please use the link below to set up a new password')
+            ->line('We have set up a new online reporting system for OBP authors, which allows you to see the current readership and sales data for your publications at any time.')
+            ->line('An account has been created for you, using the same email address to which this message has been sent. Please use the link below to set up a new password.')
             ->action('Create Password', url(config('app.url').route('password.reset', $this->token, false)));
     }
 }
