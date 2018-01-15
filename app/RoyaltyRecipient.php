@@ -61,12 +61,27 @@ class RoyaltyRecipient extends Model
     }
 
     /**
+     * Get all payments made to this recipient.
+     *
+     * @return float
+     */
+    public function getTotalPayments()
+    {
+        $result =  DB::table('royalty_payment')
+            ->select(DB::raw('SUM(`payment_value`) as total'))
+            ->where('royalty_recipient_id', '=', $this->royalty_recipient_id)
+            ->first();
+
+        return $result->total !== null ? (float) $result->total : 0.00;
+    }
+
+    /**
      * Get all payments made to this recipient on a given year
      *
      * @param int $year
      * @return float
      */
-    public function getTotalPayments($year)
+    public function getTotalPaymentsInYear($year)
     {
         $result =  DB::table('royalty_payment')
             ->select(DB::raw('SUM(`payment_value`) as total'))
