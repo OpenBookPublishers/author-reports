@@ -30,6 +30,18 @@
                             </div>
                         </a>
 
+                        <a href="{{ route('admin-royalties') }}"
+                           class="btn-large square relative">
+                            <div class="centered full-width">
+                                <i class="fa fa-gbp fa-large"
+                                   aria-hidden="true"></i>
+                                <br>
+                                <span class="full-width">
+                                    Manage Royalties
+                                </span>
+                            </div>
+                        </a>
+
                     </div>
                 </div>
             </div>
