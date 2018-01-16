@@ -11,15 +11,15 @@
 
                     <div class="alert alert-info">
                         <i class="fa fa-lg fa-exclamation-circle" aria-hidden="true"></i>
-                        <b>Please take a few seconds to answer the questions below.</b>
+                        <b>Please take a few seconds to answer the questions below.</b> Click "submit"
                     </div>
-                    <form class="form-horizontal" method="POST"
-                          action="{{ route('update-info') }}">
+                    <form id="info-form" class="form-horizontal"
+                          method="POST" action="{{ route('update-info') }}">
                         {{ csrf_field() }}
 
                         @if (!Auth::user()->display_sales)
                         <p>
-                            Currently, on every title page we display the total number of readers who have accessed the book. We are planning to provide more granular data, including the number of readers who discover our books on several other platforms. As part of our efforts to disclose all available data about the readership of our books, we would also like to display sales data for each title on our website. In order to do so we require your approval.
+                            Previously, on every title page we displayed the total number of readers who have accessed the book. We now provide more granular data, including the number of readers who discover our books on several other platforms. As part of our efforts to disclose all available data about the readership of our books, we would also like to display sales data for each title on our website. In order to do so we require your approval.
                         </p>
                         <div class="form-group{{ $errors->has('display_sales')
                                                     ? ' has-error' : '' }}">
@@ -151,7 +151,8 @@
 
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
-                                <button type="submit" class="btn btn-primary">
+                                <button id="info-submit" type="submit"
+                                        class="btn btn-primary">
                                     Submit
                                 </button>
                             </div>
@@ -162,4 +163,19 @@
         </div>
     </div>
 </div>
+<style>
+    #info-submit {
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }
+</style>
+<script>
+    $('input').change(function(){
+        $('#info-submit').removeClass('btn-primary');
+        $('#info-submit').addClass('btn-success');
+        $('#info-submit').addClass('bold');
+    });
+</script>
 @endif
