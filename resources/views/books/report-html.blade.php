@@ -26,6 +26,12 @@
         <td><b>DOI</b></td>
         <td>{{ $book->doi }}</td>
       </tr>
+      @if ($year !== null)
+      <tr>
+        <td><b>Year</b></td>
+        <td>{{ $year }}</td>
+      </tr>
+      @endif      
     </table>
 
     @include('books.report')
