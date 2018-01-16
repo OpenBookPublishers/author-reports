@@ -1,7 +1,3 @@
-@if ($is_pdf && (str_replace(range(0,9), '', $name) === "royalties" || $name === "sales"))
-  <div style="height:1px; page-break-after:always;"></div>
-@endif
-
 <p class="section-header line-break">
     @if ($is_pdf)
         {{ $table['title'] }}

@@ -150,3 +150,8 @@ td.platform {
 .nowrap {
   white-space: nowrap;
 }
+
+.page-break {
+  height:1px;
+  page-break-after:always;
+}

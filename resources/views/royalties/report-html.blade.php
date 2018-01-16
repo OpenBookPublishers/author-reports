@@ -14,31 +14,42 @@
             background-color: white;
             color: #000;
         }
+        .report-wrapper {
+            font-family: "Times New Roman", arial, Verdana;
+        }
     </style>
 </head>
 <body>
-    <?php
-    foreach ($books as $book) {
-        $data = [];
-        $data['royalties'] = $book->data;
-    ?>
-    <table id="header-table">
-      <tr>
-        <td><b>Title</b></td>
-        <td>{{ $book->title }}</td>
-      </tr>
-      <tr>
-        <td><b>DOI</b></td>
-        <td>{{ $book->doi }}</td>
-      </tr>
-    </table>
+    @foreach ($books as $key => $book) 
+        <?php
+            $data = [];
+            $data['royalties'] = $book->data;
+        ?>
+        <div class="report-wrapper">
+            <table id="header-table">
+              <tr>
+                <td><b>Title</b></td>
+                <td>{{ $book->title }}</td>
+              </tr>
+              <tr>
+                <td><b>DOI</b></td>
+                <td>{{ $book->doi }}</td>
+              </tr>
+            </table>
 
-    @include('books.report')
+            @foreach ($data as $name => $table)
+                @if (!empty($table['data']))
 
-    <div style="height:1px; page-break-after:always;"></div>
-    
-    <?php
-    }
-    ?>
+                    @include('books.table')
+
+                @endif
+            @endforeach
+        </div>
+
+        @if (!$loop->last)
+            <div class="page-break"></div>
+        @endif
+
+    @endforeach
 </body>
 </html>
