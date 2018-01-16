@@ -1,3 +1,7 @@
+@if ($is_pdf && (str_replace(range(0,9), '', $name) === "royalties" || $name === "sales"))
+  <div style="height:1px; page-break-after:always;"></div>
+@endif
+
 <p class="section-header line-break">
     @if ($is_pdf)
         {{ $table['title'] }}
@@ -16,7 +20,7 @@
         @endif
     @endif
 </p>
-<div class="table-responsive">
+<div class="{{ !$is_pdf ? 'table-responsive' : '' }}">
     <table class="report-table table">
         <tr>
           <th class="platform border">{{ $table['column'] }}</th>
@@ -78,11 +82,13 @@
             }
             $table['years_total'][$year] += $stat;
             ?>
-            <td class="{{ $class }}">
+            <td class="nowrap {{ $class }}">
                 <?php // FIXME hack for royalties paid ?>
                 @if ($platform !== "Amount due")
-                    @if (is_float($stat))
+                    @if (is_float($stat) && floor($stat) !== $stat)
                     {{ number_format($stat, 2, '.', '') }}
+                    @elseif (is_float($stat) && floor($stat) === $stat)
+                    {{ number_format($stat, 0, '.', '') }}
                     @else
                     {{ $stat ? : "" }}
                     @endif
@@ -90,9 +96,11 @@
             </td>
             @endforeach
 
-            <td class="{{ $class }}">
-                @if (is_float($stat))
+            <td class="nowrap {{ $class }}">
+                @if (is_float($stat) && floor($stat) !== $stat)
                 {{ number_format($platform_total, 2, '.', '') }}
+                @elseif (is_float($stat) && floor($stat) === $stat)
+                {{ number_format($platform_total, 0, '.', '') }}
                 @else
                 {{ $platform_total ? : "" }}
                 @endif
