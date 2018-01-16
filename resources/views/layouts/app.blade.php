@@ -22,6 +22,7 @@
     <script type="text/javascript">
       var _paq = _paq || [];
       _paq.push(['trackPageView']);
+      _paq.push(["setCookieDomain", "*.openbookpublishers.com"]);
       _paq.push(['enableLinkTracking']);
       (function() {
             var u="{{ env('MATOMO_URL') }}";
