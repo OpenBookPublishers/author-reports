@@ -56,10 +56,22 @@
                             <td></td>
                             <td></td>
                             @endif
-                            <td>{{ $author->royalties_arising }}</td>
-                            <td>{{ $author->royalties_paid }}</td>
+                            <td>
+                                {{ number_format(
+                                            $author->royalties_arising,
+                                            2, '.', '') }}
+                            </td>
+                            <td>
+                                {{ number_format(
+                                            $author->royalties_paid,
+                                            2, '.', '') }}
+                            </td>
                             <td class="{{ $author->amount_due > 0
-                            ? "warning" : "" }}">{{ $author->amount_due }}</td>
+                            ? "warning" : "" }}">
+                                {{ number_format(
+                                            $author->amount_due,
+                                            2, '.', '') }}
+                            </td>
                             <td>
                                 <div class="dropdown">
                                         <button class="btn btn-default
@@ -116,13 +128,19 @@
                                 {{ $agreement['rate'] }}
                             </td>
                             <td>
-                                {{ $agreement['Royalties arising'] }}
+                                {{ number_format(
+                                          $agreement['Royalties arising'],
+                                          2, '.', '') }}
                             </td>
                             <td>
-                                {{ $agreement['Royalties paid'] }}
+                                {{ number_format(
+                                          $agreement['Royalties paid'],
+                                          2, '.', '') }}
                             </td>
                             <td>
-                                {{ $agreement['Amount due'] }}
+                                {{ number_format(
+                                          $agreement['Amount due'],
+                                          2, '.', '') }}
                             </td>
                             <td></td>
                         </tr>
