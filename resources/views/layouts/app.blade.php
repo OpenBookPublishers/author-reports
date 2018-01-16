@@ -16,7 +16,26 @@
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
-    @yield('head')
+
+    @if (env('MATOMO_URL'))
+    <!-- Matomo -->
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+            var u="{{ env('MATOMO_URL') }}";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', '1']);
+            var d=document, g=d.createElement('script'),
+                s=d.getElementsByTagName('script')[0]
+            g.type='text/javascript'; g.async=true; g.defer=true;
+            g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    @endif
+
+@yield('head')
 </head>
 <body>
     <div id="app">
