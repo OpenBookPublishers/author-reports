@@ -19,13 +19,13 @@ class Book extends Model
         "(WorldReaderWeb) Total Opens" => "World Reader",
         "(OpenEdition) Total Book Views" => "Open Edition",
         "(GoogleBooks) Book Visits (BV)" => "Google Books",
-        "(Ungluit) Downloads" => "Unglue.it",
         "(ClassicsLibrary) Sessions" => "Classics Library",
         "(Internet Archive) Views" => "Internet Archive"
     ];
     private $downloads_measures_aliases = [
         "(DownloadLogs) Downloads" => "OBP Website",
-        "(SalesCSVDownloads) Downloads" => "Retail Distributors"
+        "(SalesCSVDownloads) Downloads" => "Retail Distributors",
+        "(Ungluit) Downloads" => "Unglue.it"
     ];
 
     public function loadAllData($year = null)
