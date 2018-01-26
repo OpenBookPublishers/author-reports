@@ -15,7 +15,7 @@ class Book extends Model
         "(Grokstat) Daily Views" => "Wikimedia",
         "(GoogleAnalytics) HTML Visits" => "OBP HTML Reader",
         "(GoogleAnalytics) Scribd Visits" => "OBP PDF Reader",
-        "(WorldReader) Total Opens" => "World Reader",
+        "(WorldReaderBinu) Total Opens" => "World Reader",
         "(WorldReaderWeb) Total Opens" => "World Reader",
         "(OpenEdition) Total Book Views" => "Open Edition",
         "(GoogleBooks) Book Visits (BV)" => "Google Books",
