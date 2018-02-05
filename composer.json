@@ -2,7 +2,7 @@
     "name": "openbookpublishers/author-reports",
     "description": "Laravel based framework for author reports.",
     "keywords": ["publishing", "authors", "reporting"],
-    "license": "GPL-3.0",
+    "license": "GPL-3.0-only",
     "type": "project",
     "require": {
         "php": ">=7.0.0",
