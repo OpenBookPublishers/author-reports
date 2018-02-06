@@ -34,6 +34,7 @@
                                 <th>Name</th>
                                 <th>Surname</th>
                                 <th>Email</th>
+                                <th>Public Sales?</th>
                                 <th>ORCID?</th>
                                 <th>Twitter?</th>
                                 <th>3rd Party Repositories?</th>
@@ -44,6 +45,8 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->wantsSalesDataPrivate()
+                                    ? "-" : "Yes" }}</td>
                                 <td>{{ $user->hasOrcid()
                                     ? "Yes" : "-" }}</td>
                                 <td>{{ $user->hasTwitter()
