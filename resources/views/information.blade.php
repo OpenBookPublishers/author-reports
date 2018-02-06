@@ -1,7 +1,7 @@
 @if (!Auth::user()->twitter
      || !Auth::user()->orcid
      || !Auth::user()->repositories)
-<div class="container">
+<div id="info-form-container" class="container hidden">
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
@@ -176,6 +176,10 @@
         $('#info-submit').removeClass('btn-primary');
         $('#info-submit').addClass('btn-success');
         $('#info-submit').addClass('bold');
+    });
+
+    $(document).ready(function() {
+        hideDashboardFormIfCookie();
     });
 </script>
 @endif
