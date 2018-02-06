@@ -23,13 +23,28 @@ window.getCookie = function getCookie(cname) {
     return "";
 };
 
-window.dismissInfoForm = function dismissInfoForm() {
-    setCookie("dissmiss-info-form", true, 7);
-};
-
 window.hideDashboardFormIfCookie = function hideDashboardFormIfCookie() {
     var dismiss = getCookie("dissmiss-info-form");
     if (!dismiss) {
         $('#info-form-container').removeClass('hidden');
+    } else {
+        $('#info-form-container').addClass('hidden');
     }
+};
+
+window.dismissInfoFormDay = function dismissInfoFormDay() {
+    dismissInfoForm(1);
+};
+
+window.dismissInfoFormWeek = function dismissInfoFormWeek() {
+    dismissInfoForm(7);
+};
+
+window.dismissInfoFormMonth = function dismissInfoFormMonth() {
+    dismissInfoForm(30);
+};
+
+function dismissInfoForm(exdays) {
+    setCookie("dissmiss-info-form", true, exdays);
+    hideDashboardFormIfCookie();
 };
