@@ -45,7 +45,7 @@
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->orcid }}</td>
-                                <td>{{ $user->twitter()
+                                <td>{{ $user->hasTwitter()
                                     ? "Yes" : "-" }}</td>
                                 <td>{{ $user->hasUploadedToRepos()
                                     ? "Yes" : "-" }}</td>
