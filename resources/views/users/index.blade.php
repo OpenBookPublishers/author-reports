@@ -34,7 +34,7 @@
                                 <th>Name</th>
                                 <th>Surname</th>
                                 <th>Email</th>
-                                <th>ORCID</th>
+                                <th>ORCID?</th>
                                 <th>Twitter?</th>
                                 <th>3rd Party Repositories?</th>
                                 <th></th>
@@ -44,7 +44,8 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
-                                <td>{{ $user->orcid }}</td>
+                                <td>{{ $user->hasOrcid()
+                                    ? "Yes" : "-" }}</td>
                                 <td>{{ $user->hasTwitter()
                                     ? "Yes" : "-" }}</td>
                                 <td>{{ $user->hasUploadedToRepos()

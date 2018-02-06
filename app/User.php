@@ -84,6 +84,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user has filled in the ORCID user field
+     *
+     * @return boolean
+     */
+    public function hasOrcid()
+    {
+        return $this->orcid !== null && $this->orcid !== "";
+    }
+
+    /**
      * Determine if the user has filled in the twitter user field
      *
      * @return boolean
