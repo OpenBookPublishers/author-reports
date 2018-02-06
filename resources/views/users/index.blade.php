@@ -34,6 +34,9 @@
                                 <th>Name</th>
                                 <th>Surname</th>
                                 <th>Email</th>
+                                <th>ORCID</th>
+                                <th>Twitter</th>
+                                <th>3rd Party Repositories?</th>
                                 <th></th>
                             </tr>
                             @foreach ($users as $user)
@@ -41,6 +44,10 @@
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
+                                <td>{{ $user->orcid }}</td>
+                                <td>{{ $user->twitter }}</td>
+                                <td>{{ $user->hasUploadedToRepos()
+                                    ? "Yes" : "-" }}</td>
                                 <td><a href="{{ route('edit-user',
                                             ['user_id' => $user->user_id]) }}"
                                        class="btn btn-default">
