@@ -5,7 +5,37 @@
     <div class="row">
         <div class="col-md-12">
             <div class="panel panel-default">
-                <div class="panel-heading">Information request</div>
+                <div class="panel-heading">
+                    Information request
+                    <div class="dropdown pull-right">
+                        <a class="pointer"
+                                id="dismissdropdown"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="true">
+                            Dismiss <i class="fa fa-times"></i>
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-right"
+                            arial-labelledby="dismissdropdown">
+                            <li>
+                                <a href="javascript:dismissInfoFormDay()">
+                                    For a day
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:dismissInfoFormWeek()">
+                                    For a week
+                                </a>
+                            </li>
+                            <li>
+                                <a href="javascript:dismissInfoFormMonth()">
+                                    For a month
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="panel-body">
 
