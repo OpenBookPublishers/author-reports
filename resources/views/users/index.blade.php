@@ -35,7 +35,7 @@
                                 <th>Surname</th>
                                 <th>Email</th>
                                 <th>ORCID</th>
-                                <th>Twitter</th>
+                                <th>Twitter?</th>
                                 <th>3rd Party Repositories?</th>
                                 <th></th>
                             </tr>
@@ -45,7 +45,8 @@
                                 <td>{{ $user->surname }}</td>
                                 <td>{{ $user->email }}</td>
                                 <td>{{ $user->orcid }}</td>
-                                <td>{{ $user->twitter }}</td>
+                                <td>{{ $user->twitter()
+                                    ? "Yes" : "-" }}</td>
                                 <td>{{ $user->hasUploadedToRepos()
                                     ? "Yes" : "-" }}</td>
                                 <td><a href="{{ route('edit-user',
