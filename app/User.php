@@ -84,6 +84,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Determine if the user has filled in the twitter user field
+     *
+     * @return boolean
+     */
+    public function hasTwitter()
+    {
+        return $this->twitter !== null && $this->twitter !== "";
+    }
+
+    /**
+     * Determine if the user has filled in the repositories text field
+     *
+     * @return boolean
+     */
+    public function hasUploadedToRepos()
+    {
+        return $this->repositories !== null && $this->repositories !== "";
+    }
+
+    /**
      * Check if the user can read royalty information for a given book
      *
      * @param int $book_id
