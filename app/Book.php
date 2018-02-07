@@ -25,7 +25,8 @@ class Book extends Model
     private $downloads_measures_aliases = [
         "(DownloadLogs) Downloads" => "OBP Website",
         "(SalesCSVDownloads) Downloads" => "Retail Distributors",
-        "(Ungluit) Downloads" => "Unglue.it"
+        "(Ungluit) Downloads" => "Unglue.it",
+        "(OAPEN) Downloads" => "OAPEN",
     ];
 
     public function loadAllData($year = null)
