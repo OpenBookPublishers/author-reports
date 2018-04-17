@@ -629,7 +629,7 @@ class Book extends Model
 
         return $result->total !== null ? (float) $result->total : 0.00;
     }
-    
+
     private function getReadershipPerCountry()
     {
         return DB::connection('mysql-stats')
@@ -639,10 +639,13 @@ class Book extends Model
             ->join('Countries', 'Countries.country_id', '=',
                 'Events.country_id')
             ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
+            ->join('Measures', 'Measures.measure_id', '=',
+                'EventMeasurements.measure_id')
             ->select( DB::raw('SUM(`value`) as readership'), 'country_name')
             ->where([
-                ['doi', '=', $this->doi], 
-                ['country_name', '<>', "(not set)"]])
+                ['doi', '=', $this->doi],
+                ['country_name', '<>', "(not set)"],
+                ['free_view', '=', 1]])
             ->groupBy('country_name')
             ->orderBy('readership')
             ->get()
@@ -658,10 +661,13 @@ class Book extends Model
             ->join('Countries', 'Countries.country_id', '=',
                 'Events.country_id')
             ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
+            ->join('Measures', 'Measures.measure_id', '=',
+                'EventMeasurements.measure_id')
             ->select( DB::raw('SUM(`value`) as readership'), 'continent_code')
             ->where([
-                ['doi', '=', $this->doi], 
-                ['continent_code', '<>', "--"]])
+                ['doi', '=', $this->doi],
+                ['continent_code', '<>', "--"],
+                ['free_view', '=', 1]])
             ->groupBy('continent_code')
             ->orderBy('readership')
             ->get()
@@ -693,7 +699,7 @@ class Book extends Model
                 ['measure_description', '=', $measure],
                 ['doi', '=', $this->doi]])
             ->first();
-        
+
         return $result->readership !== null ? $result->readership : 0;
     }
 
