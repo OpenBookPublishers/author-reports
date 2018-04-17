@@ -55,7 +55,7 @@ class Book extends Model
     }
 
     /**
-     * 
+     *
      *
      * @todo replace env array with proper table
      * @param App\RoyaltyAgreement $agreement
@@ -98,7 +98,7 @@ class Book extends Model
     }
 
     /**
-     * 
+     *
      *
      * @todo replace env array with proper table
      * @param App\RoyaltyAgreement $agreement
@@ -298,7 +298,7 @@ class Book extends Model
         $cur_date = $this->publication_date;
         $end = date("Y-m-d");
         $d = "01"; // we want whole months, so we start counting from the first
-        
+
         do {
             $y = date("Y", strtotime($cur_date));
             $m = date("m", strtotime($cur_date));
@@ -329,7 +329,7 @@ class Book extends Model
         foreach ($this->volumes as $volume) {
             $formats[] = $volume->format_name;
         }
-        
+
         return $formats;
     }
 
@@ -378,7 +378,7 @@ class Book extends Model
                         $stats[$alias][$y] = 0;
                     }
 
-                    $units = $this->getMeasurement($type, $measure, 
+                    $units = $this->getMeasurement($type, $measure,
                                                        $alias, $y);
                     $stats[$alias][$y] += $units;
                 } elseif ($year === $y) {
@@ -412,7 +412,7 @@ class Book extends Model
     /**
      * Obtain a multidimensional array in the form of
      * [(integer)Year => (float)NetRevenue].
-     *  
+     *
      * @return array
      */
     private function getTotalNetRevenueByYear()
@@ -422,11 +422,11 @@ class Book extends Model
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
-            
+
             $total = $this->getTotalNetRevenueInYear($y);
             $revenue[$y] += $total;
         }
-        
+
         return $revenue;
     }
 
@@ -443,11 +443,11 @@ class Book extends Model
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
-            
+
             $total = $this->getTotalRevenue($y);
             $revenue[$y] += $total;
         }
-        
+
         return $revenue;
     }
 
@@ -464,11 +464,11 @@ class Book extends Model
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
-            
+
             $total = $this->getNonSalesIncome($y);
             $revenue[$y] += $total;
         }
-        
+
         return $revenue;
     }
 
@@ -485,11 +485,11 @@ class Book extends Model
             if (!isset($revenue[$y])) {
                 $revenue[$y] = 0.00;
             }
-            
+
             $total = $this->getNonSalesCosts($y);
             $revenue[$y] += $total;
         }
-        
+
         return $revenue;
     }
 
@@ -579,7 +579,7 @@ class Book extends Model
     }
 
     /**
-     * Obtain the total positive or negative subventions 
+     * Obtain the total positive or negative subventions
      * for this book in a given year.
      *
      * @param string $type
@@ -597,10 +597,10 @@ class Book extends Model
                 $symbol = ">";
                 break;
         }
- 
+
         return $year === null
             ? $this->getTotalSubventions($symbol)
-            : $this->getSubventionsInYear($symbol, $year);  
+            : $this->getSubventionsInYear($symbol, $year);
     }
 
     private function getSubventionsInYear($symbol, $year)
@@ -730,7 +730,7 @@ class Book extends Model
                 ['measure_description', '=', $measure],
                 ['doi', '=', $this->doi]])
             ->first();
-        
+
         return $result->readership !== null ? $result->readership : 0;
     }
 
@@ -751,7 +751,7 @@ class Book extends Model
             ->whereYear('sale_date', $year)
             ->where([['doi', '=', $this->doi], ['format_name', '=', $format]])
             ->first();
-        
+
         return $result->sales !== null ? $result->sales : 0;
     }
 
@@ -774,7 +774,7 @@ class Book extends Model
             ->whereMonth('sale_date', $month)
             ->where([['doi', '=', $this->doi], ['format_name', '=', $format]])
             ->first();
-        
+
         return $result->sales !== null ? $result->sales : 0;
     }
 
@@ -793,7 +793,7 @@ class Book extends Model
             ->whereYear('sale_date', $year)
             ->where('doi', '=', $this->doi)
             ->first();
-        
+
         return $result->sales !== null ? $result->sales : 0;
     }
 
@@ -811,7 +811,7 @@ class Book extends Model
             ->select( DB::raw('SUM(`sales_units`) as sales'))
             ->where('doi', '=', $this->doi)
             ->first();
-        
+
         return $result->sales !== null ? $result->sales : 0;
     }
 
@@ -831,7 +831,7 @@ class Book extends Model
             ->whereMonth('sale_date', $month)
             ->where('doi', '=', $this->doi)
             ->first();
-        
+
         return $result->sales !== null ? $result->sales : 0;
     }
 }
