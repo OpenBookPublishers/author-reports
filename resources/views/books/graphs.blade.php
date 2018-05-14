@@ -74,7 +74,11 @@
                       style="background-color: #{{ $colours[$count] }};">
                 </span>
             </td>
+            @if ($measure === 'Other')
+            <td>{{ $measure }} <i class="fa fa-asterisk" style="font-size: x-small;color: red;" aria-hidden="true"></i></td>
+            @else
             <td>{{ $measure }}</td>
+            @endif
             <td>{{ $stat }}</td>
             <td>{{ $pct }}</td>
         </tr>
