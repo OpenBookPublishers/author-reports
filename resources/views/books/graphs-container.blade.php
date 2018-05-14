@@ -10,7 +10,7 @@
                     @include('books.graphs')
                     <div style="clear: both;"></div>
                     <p class="text-muted">
-                        <i class="fa fa-asterisk" style="font-size: x-small;color: red;" aria-hidden="true"></i> Only readership for which we have geographical information is displayed. "Other" represents other countries.
+                        <span style="font-family: \"Times New Roman\"">*</span> 'Other' represents the remaining countries from which we have received visits. The number of visits from each country is too small to list individually.
                     </p>
                 </div>
             </div>
