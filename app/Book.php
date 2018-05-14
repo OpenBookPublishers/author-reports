@@ -145,7 +145,7 @@ class Book extends Model
             }
             $total += $result->readership;
         }
-        $countries['Other'] = $other;
+        $countries['Other *'] = $other;
         asort($countries);
         $this->countries = $countries;
         $this->total_country_readership = $total;
