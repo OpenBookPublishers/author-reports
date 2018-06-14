@@ -80,31 +80,9 @@ class Book extends Model
             $royalties['Non-sales costs']  = $this->getNonSalesCostsByYear();
             $royalties['Net Rev Total']    = [];
 
-            foreach ($this->years_active as $y => $months) {
-                $salesThisYear = $this->getTotalSalesByYear($y);
-                $total_sales += $salesThisYear;
-
-                $royalties['Royalties arising'][$y] = 0.00;
-                $royalties['Net Rev Total'][$y] =
-                    $royalties['Non-sales income'][$y]
-                    + $royalties['Non-sales costs'][$y]
-                    + $royalties['Net Sales Rev'][$y];
-                $total_net += isset($royalties['Net Rev Total'][$y])
-                    ? $royalties['Net Rev Total'][$y]
-                    : 0.00;
-
-                $royalty = $agreement->royaltyRate->calculate(
-                  $royalties['Net Rev Total'][$y], $total_net, $salesThisYear);
-                $royalties['Royalties arising'][$y] += $royalty;
-
-                $royalties['Royalties paid'][$y] = $agreement->royaltyRecipient
-                    ->getTotalPaymentsInYear($y);
-                $royalties['Amount due'][$y] =
-                    $royalties['Royalties arising'][$y]
-                    - $royalties['Royalties paid'][$y];
-            }
+            $periods = $this->years_active;
         } else {
-            $royalties['Net Sales Rev'] =
+            $royalties['Net Sales Rev'] = 
                 $this->getTotalNetRevenueByQuarter($year);
             $royalties['Non-sales income'] =
                 $this->getNonSalesIncomeByQuarter($year);
@@ -112,32 +90,37 @@ class Book extends Model
                 $this->getNonSalesCostsByQuarter($year);
             $royalties['Net Rev Total'] = [];
 
-            foreach ($this->quarters as $q => $quarter) {
-                $salesThisQuarter = $this->getTotalSalesByYear($year, $q);
-                $total_sales += $salesThisQuarter;
+            $periods = $this->quarters;
+        }
 
-                $royalties['Royalties arising'][$q] = 0.00;
-                $royalties['Net Rev Total'][$q] =
-                    $royalties['Non-sales income'][$q]
-                    + $royalties['Non-sales costs'][$q]
-                    + $royalties['Net Sales Rev'][$q];
-                $total_net += isset($royalties['Net Rev Total'][$q])
-                    ? $royalties['Net Rev Total'][$q]
-                    : 0.00;
+        // When $periods == years_active $p will be the year, otherwise it will
+        // be the number of the quarter. Functions like getTotalSalesByYear()
+        // can take a year and an optional quarter; when we want quarterly data
+        // we provide both ($year, $p).
+        foreach ($periods as $p => $na) {
+            $salesThisPeriod = $year === null ? $this->getTotalSalesByYear($p)
+                : $this->getTotalSalesByYear($year, $p);
+            $total_sales += $salesThisPeriod;
 
-                $royalty = $agreement->royaltyRate->calculate(
-                    $royalties['Net Rev Total'][$q],
-                    $total_net,
-                    $salesThisQuarter);
-                $royalties['Royalties arising'][$q] += $royalty;
+            $royalties['Royalties arising'][$p] = 0.00;
+            $royalties['Net Rev Total'][$p] =
+                $royalties['Non-sales income'][$p]
+                + $royalties['Non-sales costs'][$p]
+                + $royalties['Net Sales Rev'][$p];
+            $total_net += isset($royalties['Net Rev Total'][$p])
+                ? $royalties['Net Rev Total'][$p]
+                : 0.00;
 
-                $royalties['Royalties paid'][$q] =
-                    $agreement->royaltyRecipient
-                        ->getTotalPaymentsInYear($year, $q);
-                $royalties['Amount due'][$q] =
-                    $royalties['Royalties arising'][$q]
-                    - $royalties['Royalties paid'][$q];
-            }
+            $royalty = $agreement->royaltyRate->calculate(
+              $royalties['Net Rev Total'][$p], $total_net, $salesThisPeriod);
+            $royalties['Royalties arising'][$p] += $royalty;
+
+            $royalties['Royalties paid'][$p] = $year === null
+              ? $agreement->royaltyRecipient->getTotalPaymentsInYear($p)
+              : $agreement->royaltyRecipient->getTotalPaymentsInYear($year,$p);
+            $royalties['Amount due'][$p] =
+                $royalties['Royalties arising'][$p]
+                - $royalties['Royalties paid'][$p];
         }
 
         return $royalties;
