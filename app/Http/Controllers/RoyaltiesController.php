@@ -44,11 +44,10 @@ class RoyaltiesController extends Controller
         return view('royalties.index', compact('authors'));
     }
 
-    private function getTableData($book, $agreement)
+    private function getTableData($book, $agreement, $year)
     {
         $data = $this->table_data;
-        $data['data'] =
-            $book->calculateRoyaltiesInAgreement($agreement);
+        $data['data'] = $book->calculateRoyaltiesInAgreement($agreement, $year);
         return $data;
     }
 
@@ -58,7 +57,7 @@ class RoyaltiesController extends Controller
      * @param int $author_id
      * @return Illuminate\Support\Facades\View
      */
-    public function royaltyReportHtml($author_id)
+    public function royaltyReportHtml($author_id, $year = null)
     {
         $author = Author::findOrFail($author_id);
         if (!$author->receivesRoyalties()) {
@@ -67,18 +66,18 @@ class RoyaltiesController extends Controller
             return back();
         }
 
-        $year = null;
-        $is_pdf = true;
+        $year = $year !== null ? (int) $year : null;
+        $is_pdf = false;
         $is_public = false;
         $books = [];
         foreach ($author->royaltyRecipients as $recipient) {
             $agreement = $recipient->royaltyAgreement;
             $book = $agreement->book;
             $book->years_active = $book->getYearsActive();
-            $book->data = $this->getTableData($book, $agreement);
+            $book->data = $this->getTableData($book, $agreement, $year);
             $books[] = $book;
         }
-        
+
         return View::make('royalties.report-headers',
             compact('author', 'books', 'year', 'is_pdf', 'is_public'));
     }
@@ -89,7 +88,7 @@ class RoyaltiesController extends Controller
      * @param int $author_id
      * @return Illuminate\Support\Facades\View
      */
-    public function royaltyReport($author_id)
+    public function royaltyReport($author_id, $year = null)
     {
         $author = Author::findOrFail($author_id);
         if (!$author->receivesRoyalties()) {
@@ -98,7 +97,7 @@ class RoyaltiesController extends Controller
             return back();
         }
 
-        $year = null;
+        $year = $year !== null ? (int) $year : null;
         $is_pdf = true;
         $is_public = false;
         $books = [];
@@ -106,10 +105,10 @@ class RoyaltiesController extends Controller
             $agreement = $recipient->royaltyAgreement;
             $book = $agreement->book;
             $book->years_active = $book->getYearsActive();
-            $book->data = $this->getTableData($book, $agreement);
+            $book->data = $this->getTableData($book, $agreement, $year);
             $books[] = $book;
         }
-        
+
         return View::make('royalties.report-html',
             compact('books', 'year', 'is_pdf', 'is_public'));
     }
@@ -120,10 +119,10 @@ class RoyaltiesController extends Controller
      * @param int $author_id
      * @return string
      */
-    private function royaltyReportPdf($author_id)
+    private function royaltyReportPdf($author_id, $year = null)
     {
         $dompdf = new Dompdf;
-        $dompdf->loadHtml($this->royaltyReport($author_id)->render());
+        $dompdf->loadHtml($this->royaltyReport($author_id, $year)->render());
         $dompdf->render();
         return $dompdf->output();
     }
@@ -134,17 +133,17 @@ class RoyaltiesController extends Controller
      * @param int $author_id
      * @return Response
      */
-    public function downloadRoyaltyReport($author_id)
+    public function downloadRoyaltyReport($author_id, $year = null)
     {
         $author = Author::findOrFail($author_id);
-        $title = "Royalties_Report";
+        $title = "Royalties_Report_${year}";
         $filename = $title . "-" . $author->sanitisedName() . ".pdf";
 
-        return new Response($this->royaltyReportPdf($author_id), 200, [
+        return new Response($this->royaltyReportPdf($author_id, $year), 200, [
            'Content-Description' => 'File Transfer',
            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
            'Content-Transfer-Encoding' => 'binary',
            'Content-Type' => 'application/pdf',
-        ]);   
+        ]);
     }
 }

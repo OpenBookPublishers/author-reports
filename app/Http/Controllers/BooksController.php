@@ -152,7 +152,7 @@ class BooksController extends Controller
                         $agreement->royalty_agreement_id)) {
                     $data['royalties' . $key] = $this->table_data['royalties'];
                     $data['royalties' . $key]['data'] =
-                        $book->calculateRoyaltiesInAgreement($agreement);
+                        $book->calculateRoyaltiesInAgreement($agreement, $year);
 
                     // Admins will see all agreements, let's differentiate
                     if (Auth::user()->isAdmin()) {
