@@ -79,15 +79,19 @@ class RoyaltyRecipient extends Model
      * Get all payments made to this recipient on a given year
      *
      * @param int $year
+     * @param int|null $quarter
      * @return float
      */
-    public function getTotalPaymentsInYear($year)
+    public function getTotalPaymentsInYear($year, $quarter = null)
     {
-        $result =  DB::table('royalty_payment')
+        $q = DB::table('royalty_payment')
             ->select(DB::raw('SUM(`payment_value`) as total'))
             ->whereYear('payment_date', $year)
-            ->where('royalty_recipient_id', '=', $this->royalty_recipient_id)
-            ->first();
+            ->where('royalty_recipient_id', '=', $this->royalty_recipient_id);
+        if ($quarter) {
+            $q = $q->whereRaw('QUARTER(payment_date) = ?', [$quarter]);
+        }
+        $result = $q->first();
 
         return $result->total !== null ? (float) $result->total : 0.00;
     }

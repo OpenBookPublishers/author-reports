@@ -20,8 +20,7 @@
     <table class="report-table table">
         <tr>
           <th class="platform border">{{ $table['column'] }}</th>
-          @if ($year === null 
-                && str_replace(range(0,9), '', $name) !== "royalties")
+          @if ($year === null)
             @foreach ($book->years_active as $year => $months)
           <th class="border right">
               @if ($is_pdf)
@@ -31,6 +30,14 @@
                           ['doi_prefix' => $book->getDoiPrefix(),
                            'doi_suffix' => $book->getDoiSuffix(),
                            'year' => $year]) }}"
+                 data-toggle="tooltip" data-placement="bottom"
+                 title="Click here to view {{ $year }}'s monthly breakdown">
+                {{ $year }}
+              </a>
+              @elseif (str_replace(range(0,9), '', $name) === "royalties")
+              <a href="{{ URL::route('admin-royalties-html',
+                                     ['author_id' => $author->author_id,
+                                      'year' => $year]) }}"
                  data-toggle="tooltip" data-placement="bottom"
                  title="Click here to view {{ $year }}'s monthly breakdown">
                 {{ $year }}
@@ -45,18 +52,20 @@
               @endif
           </th>
             @endforeach
-          @elseif (str_replace(range(0,9), '', $name) === "royalties")
-            @foreach ($book->years_active as $year => $months)
-          <th class="border right">
-              {{ $year }}
-          </th>
-            @endforeach
           @else
-            @foreach ($book->years_active[$year] as $month => $blank)
+            @if (str_replace(range(0,9), '', $name) === "royalties")
+              @foreach ($book->quarters as $q => $quarter)
+          <th class="border right">
+              {{ $quarter }}
+          </th>
+              @endforeach
+            @else
+              @foreach ($book->years_active[$year] as $month => $blank)
           <th class="border right">
               {{ Carbon\Carbon::createFromFormat("m", $month)->format('M') }}
           </th>
-            @endforeach
+              @endforeach
+            @endif
           @endif
           <th class="border right">Totals</th>
         </tr>
@@ -93,9 +102,11 @@
             @endforeach
 
             <td class="nowrap {{ $class }}">
-                @if (is_float($stat) && floor($stat) !== $stat)
+                @if (is_float($platform_total)
+                     && floor($platform_total) !== $platform_total)
                 {{ number_format($platform_total, 2, '.', '') }}
-                @elseif (is_float($stat) && floor($stat) === $stat)
+                @elseif (is_float($stat)
+                         && floor($platform_total) === $platform_total)
                 {{ number_format($platform_total, 0, '.', '') }}
                 @else
                 {{ $platform_total ? : "" }}

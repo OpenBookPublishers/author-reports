@@ -49,11 +49,11 @@ Route::get('/admin/user/edit/{user_id}', 'UsersController@edit')
 Route::get('/admin/royalties', 'RoyaltiesController@index')
       ->middleware('admin')
       ->name('admin-royalties');
-Route::get('/admin/royalties/report/pdf/{author_id}',
+Route::get('/admin/royalties/report/pdf/{author_id}/{year?}',
            'RoyaltiesController@downloadRoyaltyReport')
       ->middleware('admin')
       ->name('admin-royalties-pdf');
-Route::get('/admin/royalties/report/html/{author_id}',
+Route::get('/admin/royalties/report/html/{author_id}/{year?}',
            'RoyaltiesController@royaltyReportHtml')
       ->middleware('admin')
       ->name('admin-royalties-html');

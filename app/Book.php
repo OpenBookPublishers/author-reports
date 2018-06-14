@@ -10,6 +10,7 @@ class Book extends Model
 
     public $table = "book";
     public $primaryKey = "book_id";
+    public $years_active;
 
     private $stats_measures_aliases = [
         "(Grokstat) Daily Views" => "Wikimedia",
@@ -27,6 +28,13 @@ class Book extends Model
         "(SalesCSVDownloads) Downloads" => "Retail Distributors",
         "(Ungluit) Downloads" => "Unglue.it",
         "(OAPEN) Downloads" => "OAPEN",
+    ];
+
+    public $quarters = [
+        1 => "First Quarter",
+        2 => "Second Quarter",
+        3 => "Third Quarter",
+        4 => "Fourth Quarter"
     ];
 
     public function loadAllData($year = null)
@@ -60,38 +68,59 @@ class Book extends Model
      * @todo replace env array with proper table
      * @param App\RoyaltyAgreement $agreement
      */
-    public function calculateRoyaltiesInAgreement($agreement)
+    public function calculateRoyaltiesInAgreement($agreement, $year)
     {
         $royalties   = [];
         $total_sales = 0;
         $total_net   = 0;
 
-        $royalties['Net Sales Rev']    = $this->getTotalNetRevenueByYear();
-        $royalties['Non-sales income'] = $this->getNonSalesIncomeByYear();
-        $royalties['Non-sales costs']  = $this->getNonSalesCostsByYear();
-        $royalties['Net Rev Total']    = [];
+        if ($year === null) {
+            $royalties['Net Sales Rev']    = $this->getTotalNetRevenueByYear();
+            $royalties['Non-sales income'] = $this->getNonSalesIncomeByYear();
+            $royalties['Non-sales costs']  = $this->getNonSalesCostsByYear();
+            $royalties['Net Rev Total']    = [];
 
-        foreach ($this->years_active as $y => $months) {
-            $salesThisYear = $this->getTotalSalesByYear($y);
-            $total_sales += $salesThisYear;
+            $periods = $this->years_active;
+        } else {
+            $royalties['Net Sales Rev'] = 
+                $this->getTotalNetRevenueByQuarter($year);
+            $royalties['Non-sales income'] =
+                $this->getNonSalesIncomeByQuarter($year);
+            $royalties['Non-sales costs'] =
+                $this->getNonSalesCostsByQuarter($year);
+            $royalties['Net Rev Total'] = [];
 
-            $royalties['Royalties arising'][$y] = 0.00;
-            $royalties['Net Rev Total'][$y] =
-                $royalties['Non-sales income'][$y]
-                + $royalties['Non-sales costs'][$y]
-                + $royalties['Net Sales Rev'][$y];
-            $total_net += isset($royalties['Net Rev Total'][$y])
-                ? $royalties['Net Rev Total'][$y]
+            $periods = $this->quarters;
+        }
+
+        // When $periods == years_active $p will be the year, otherwise it will
+        // be the number of the quarter. Functions like getTotalSalesByYear()
+        // can take a year and an optional quarter; when we want quarterly data
+        // we provide both ($year, $p).
+        foreach ($periods as $p => $na) {
+            $salesThisPeriod = $year === null ? $this->getTotalSalesByYear($p)
+                : $this->getTotalSalesByYear($year, $p);
+            $total_sales += $salesThisPeriod;
+
+            $royalties['Royalties arising'][$p] = 0.00;
+            $royalties['Net Rev Total'][$p] =
+                $royalties['Non-sales income'][$p]
+                + $royalties['Non-sales costs'][$p]
+                + $royalties['Net Sales Rev'][$p];
+            $total_net += isset($royalties['Net Rev Total'][$p])
+                ? $royalties['Net Rev Total'][$p]
                 : 0.00;
 
             $royalty = $agreement->royaltyRate->calculate(
-                $royalties['Net Rev Total'][$y], $total_net, $salesThisYear);
-            $royalties['Royalties arising'][$y] += $royalty;
+              $royalties['Net Rev Total'][$p], $total_net, $salesThisPeriod);
+            $royalties['Royalties arising'][$p] += $royalty;
 
-            $royalties['Royalties paid'][$y] = $agreement->royaltyRecipient
-                ->getTotalPaymentsInYear($y);
-            $royalties['Amount due'][$y] = $royalties['Royalties arising'][$y]
-                - $royalties['Royalties paid'][$y];
+            $royalties['Royalties paid'][$p] = $year === null
+              ? $agreement->royaltyRecipient->getTotalPaymentsInYear($p)
+              : $agreement->royaltyRecipient->getTotalPaymentsInYear($year,$p);
+            $royalties['Amount due'][$p] =
+                $royalties['Royalties arising'][$p]
+                - $royalties['Royalties paid'][$p];
         }
 
         return $royalties;
@@ -432,6 +461,27 @@ class Book extends Model
 
     /**
      * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)NetRevenue].
+     *
+     * @return array
+     */
+    private function getTotalNetRevenueByQuarter($year)
+    {
+        $revenue = [];
+        foreach ($this->quarters as $q => $na) {
+            if (!isset($revenue[$q])) {
+                $revenue[$q] = 0.00;
+            }
+
+            $total = $this->getTotalNetRevenueInYear($year, $q);
+            $revenue[$q] += $total;
+        }
+
+        return $revenue;
+    }
+
+    /**
+     * Obtain a multidimensional array in the form of
      * [(integer)Year => (float)totalRevenue].
      *
      * @return array
@@ -474,6 +524,28 @@ class Book extends Model
 
     /**
      * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)Income].
+     *
+     * @param int $year
+     * @return array
+     */
+    private function getNonSalesIncomeByQuarter($year)
+    {
+        $revenue = [];
+        foreach ($this->quarters as $q => $na) {
+            if (!isset($revenue[$q])) {
+                $revenue[$q] = 0.00;
+            }
+
+            $total = $this->getNonSalesIncome($year, $q);
+            $revenue[$q] += $total;
+        }
+
+        return $revenue;
+    }
+
+    /**
+     * Obtain a multidimensional array in the form of
      * [(integer)Year => (float)Costs].
      *
      * @return array
@@ -494,20 +566,45 @@ class Book extends Model
     }
 
     /**
+     * Obtain a multidimensional array in the form of
+     * [(integer)Year => (float)Costs].
+     *
+     * @param int $year
+     * @return array
+     */
+    private function getNonSalesCostsByQuarter($year)
+    {
+       $revenue = [];
+        foreach ($this->quarters as $q => $na) {
+            if (!isset($revenue[$q])) {
+                $revenue[$q] = 0.00;
+            }
+
+            $total = $this->getNonSalesCosts($year, $q);
+            $revenue[$q] += $total;
+        }
+
+        return $revenue;
+    }
+
+    /**
      * Obtain the total net revenue for this book in a given year.
      *
      * @param int $year
      * @return float
      */
-    private function getTotalNetRevenueInYear($year)
+    private function getTotalNetRevenueInYear($year, $quarter = null)
     {
-        $result =  DB::table('sale')
+        $q =  DB::table('sale')
             ->join('volume', 'sale.volume_id', '=', 'volume.volume_id')
             ->join('book', 'volume.book_id', '=', 'book.book_id')
             ->select(DB::raw('SUM(`net_revenue`) as total'))
             ->whereYear('sale_date', $year)
-            ->where('doi', '=', $this->doi)
-            ->first();
+            ->where('doi', '=', $this->doi);
+        if ($quarter) {
+            $q = $q->whereRaw('QUARTER(sale_date) = ?', [$quarter]);
+        }
+        $result = $q->first();
 
         return $result->total !== null ? (float) $result->total : 0.00;
 
@@ -559,9 +656,9 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getNonSalesIncome($year = null)
+    private function getNonSalesIncome($year = null, $quarter = null)
     {
-        return $this->getSubventions("income", $year);
+        return $this->getSubventions("income", $year, $quarter);
 
     }
 
@@ -572,9 +669,9 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getNonSalesCosts($year = null)
+    private function getNonSalesCosts($year = null, $quarter = null)
     {
-        return $this->getSubventions("cost", $year);
+        return $this->getSubventions("cost", $year, $quarter);
 
     }
 
@@ -586,7 +683,7 @@ class Book extends Model
      * @param int $year
      * @return float
      */
-    private function getSubventions($type, $year = null)
+    private function getSubventions($type, $year = null, $quarter = null)
     {
         switch ($type) {
             case "cost":
@@ -600,19 +697,22 @@ class Book extends Model
 
         return $year === null
             ? $this->getTotalSubventions($symbol)
-            : $this->getSubventionsInYear($symbol, $year);
+            : $this->getSubventionsInYear($symbol, $year, $quarter);
     }
 
-    private function getSubventionsInYear($symbol, $year)
+    private function getSubventionsInYear($symbol, $year, $quarter = null)
     {
-        $result =  DB::table('subvention')
+        $q = DB::table('subvention')
             ->join('book', 'book.book_id', '=', 'subvention.book_id')
             ->select(DB::raw('SUM(`subvention_value`) as total'))
             ->whereYear('subvention_date', $year)
             ->where([
                 ['subvention_value', $symbol, 0],
-                ['doi', '=', $this->doi]])
-            ->first();
+                ['doi', '=', $this->doi]]);
+        if ($quarter) {
+            $q = $q->whereRaw('QUARTER(subvention_date) = ?', [$quarter]);
+        }
+        $result = $q->first();
 
         return $result->total !== null ? (float) $result->total : 0.00;
     }
@@ -782,17 +882,21 @@ class Book extends Model
      * Obtain the total this books sales in a given year
      *
      * @param int $year
+     * @param int|null $quarter
      * @return int
      */
-    private function getTotalSalesByYear($year)
+    private function getTotalSalesByYear($year, $quarter = null)
     {
-        $result = DB::table('sale')
+        $q = DB::table('sale')
             ->join('volume','sale.volume_id', '=', 'volume.volume_id')
             ->join('book','volume.book_id', '=', 'book.book_id')
             ->select( DB::raw('SUM(`sales_units`) as sales'))
             ->whereYear('sale_date', $year)
-            ->where('doi', '=', $this->doi)
-            ->first();
+            ->where('doi', '=', $this->doi);
+        if ($quarter) {
+            $q = $q->whereRaw('QUARTER(sale_date) = ?', [$quarter]);
+        }
+        $result = $q->first();
 
         return $result->sales !== null ? $result->sales : 0;
     }
