@@ -34,7 +34,7 @@
                  title="Click here to view {{ $year }}'s monthly breakdown">
                 {{ $year }}
               </a>
-              @elseif (str_replace(range(0,9), '', $name) === "royalties")
+              @elseif ((str_replace(range(0,9), '', $name) === "royalties") && isset($author))
               <a href="{{ URL::route('admin-royalties-html',
                                      ['author_id' => $author->author_id,
                                       'year' => $year]) }}"
