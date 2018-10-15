@@ -40,6 +40,7 @@
             -o-transform: rotate({{ $start }}deg); /* Opera */
             transform:rotate({{ $start }}deg);
         }
+        <?php $value = $value != 360 ? $value : $value -1; ?>
         .pie[data-value="{{ $value }}"]:before {
             -moz-transform: rotate({{ $value + 1 }}deg); /* Firefox */
             -ms-transform: rotate({{ $value + 1 }}deg); /* IE */
