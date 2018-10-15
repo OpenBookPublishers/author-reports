@@ -11,7 +11,7 @@
                 Manage Users
             </a>
         </div>
-        <div class="col-lg-2 pull-right">
+        <div class="col-lg-4 pull-right">
             @yield('secondary-btn')
         </div>
     </div>
