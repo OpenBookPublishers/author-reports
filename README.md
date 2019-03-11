@@ -1,3 +1,5 @@
+[![Release](https://img.shields.io/github/release/OpenBookPublishers/author-reports.svg?colorB=58839b)](https://github.com/OpenBookPublishers/author-reports/releases) [![License](https://img.shields.io/github/license/OpenBookPublishers/author-reports.svg?colorB=ff0000)](https://github.com/OpenBookPublishers/author-reports/blob/master/LICENSE)
+
 # author-reports
 Statistics reporting system for authors based in Laravel 5.4.
 

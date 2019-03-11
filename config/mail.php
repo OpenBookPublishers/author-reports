@@ -69,9 +69,18 @@ return [
     | the application send e-mail messages. A sensible default using the
     | transport layer security protocol should provide great security.
     |
+    | Allow self signed certificates
+    | https://stackoverflow.com/a/46783861/8215719
     */
 
     'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'stream' => [
+        'ssl' => [
+            'allow_self_signed' => env('MAIL_ALLOW_SELF_SIGNED', false),
+            'verify_peer' => env('MAIL_VERIFY_PEER', true),
+            'verify_peer_name' => env('MAIL_VERIFY_PEER_NAME', true),
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -119,5 +128,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
 ];
