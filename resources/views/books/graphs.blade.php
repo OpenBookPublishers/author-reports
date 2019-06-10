@@ -16,7 +16,7 @@
     ?>
     @foreach ($graph['data'] as $measure => $stat)
     <?php
-    if (int($graph['total']) === 0) {
+    if ((int)$graph['total'] === 0) {
         echo "Geographical data not available.";
         continue;
     }
