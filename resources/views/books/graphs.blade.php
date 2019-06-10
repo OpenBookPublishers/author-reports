@@ -3,12 +3,6 @@
 @endsection
 
 @foreach ($graph_data as $graph)
-<?php
-if ((int)$graph['total'] === 0) {
-    echo "Geographical data not available.";
-    continue;
-}
-?>
 <div class="graph-wrap">
     <p class="section-header line-break-double">
         {!! $graph['title'] !!}
