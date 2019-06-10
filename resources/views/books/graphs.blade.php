@@ -16,6 +16,10 @@
     ?>
     @foreach ($graph['data'] as $measure => $stat)
     <?php
+    if (int($graph['total']) === 0) {
+        echo "Geographical data not available.";
+        continue;
+    }
     $value = round(($stat * 360) / $graph['total']);
     $piece++;
     if ($value >= 180) {
