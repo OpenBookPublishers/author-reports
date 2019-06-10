@@ -3,6 +3,12 @@
 @endsection
 
 @foreach ($graph_data as $graph)
+<?php
+if ((int)$graph['total'] === 0) {
+    echo "Geographical data not available.";
+    continue;
+}
+?>
 <div class="graph-wrap">
     <p class="section-header line-break-double">
         {!! $graph['title'] !!}
@@ -16,10 +22,6 @@
     ?>
     @foreach ($graph['data'] as $measure => $stat)
     <?php
-    if ((int)$graph['total'] === 0) {
-        echo "Geographical data not available.";
-        continue;
-    }
     $value = round(($stat * 360) / $graph['total']);
     $piece++;
     if ($value >= 180) {
