@@ -8,7 +8,7 @@
 
                 <div class="panel-body">
                     <?php
-                    if ((int)$graph_data['total']['countries']['total'] !== 0) {
+                    if ((int)$graph_data['countries']['total'] !== 0) {
                     ?>
                     @include('books.graphs')
                     <div style="clear: both;"></div>
