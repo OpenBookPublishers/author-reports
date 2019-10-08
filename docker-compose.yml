@@ -1,0 +1,40 @@
+version: "3.5"
+
+services:
+  proxy:
+    image: nginx
+    container_name: "proxy"
+    restart: unless-stopped
+    volumes:
+      - ./site.conf:/etc/nginx/conf.d/default.conf
+      - author-reports:/var/www/html:ro
+      - ./.env:/var/www/html/.env:ro
+    depends_on:
+      - author-reports
+    networks:
+      proxy:
+        ipv4_address: 172.30.0.3
+
+  author-reports:
+    image: openbookpublishers/author-reports
+    container_name: "author_reports"
+    restart: unless-stopped
+    volumes:
+      - ./.env:/var/www/html/.env:ro
+      - author-reports:/var/www/html
+    networks:
+      - obpnet
+      - proxy
+
+volumes:
+  author-reports:
+
+networks:
+  proxy:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.30.0.0/29
+  obpnet:
+    external:
+      name: obpnet

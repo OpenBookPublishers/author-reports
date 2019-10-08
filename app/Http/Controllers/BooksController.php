@@ -76,7 +76,7 @@ class BooksController extends Controller
        "FAA43A", // (orange)
        "F15854", // (red)
        "60BD68", // (green)
-       "0092B9", // (blue)       
+       "0092B9", // (blue)
     ];
 
     /**
