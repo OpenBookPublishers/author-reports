@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class BooksController extends Controller
 {
-    
+
     private $table_data = [
         "readership" => [
             "title" => "Online Readership",
@@ -47,37 +47,6 @@ class BooksController extends Controller
             "global_total" => 0
          ]
     ];
-    private $graph_data = [
-        "countries" => [
-            "title" => "Unique Visits to Online Readers by Country <br>"
-                       . "(when available)",
-            "column" => "Country",
-            "info" => "",
-            "data" => [],
-            "total" => 0
-        ],
-        "continents" => [
-            "title" => "Unique Visits to Online Readers by Continent <br>"
-                       . "(when available)",
-            "column" => "Continent",
-            "info" => "",
-            "data" => [],
-            "total" => 0
-        ]
-    ];
-    private $colours = [
-       "4D4D4D", // (gray)
-       "F2B705", // (yellow)
-       "5DA5DA", // (blue)
-       "B2912F", // (brown)
-       "B276B2", // (purple)
-       "FAA43A", // (orange)
-       "F17CB0", // (pink)
-       "FAA43A", // (orange)
-       "F15854", // (red)
-       "60BD68", // (green)
-       "0092B9", // (blue)       
-    ];
 
     /**
      * Render an interface to manage books
@@ -100,25 +69,13 @@ class BooksController extends Controller
             return back();
         }
 
-        $book->loadCountryReadership();
-        $book->loadContinentReadership();
-        $this->graph_data['countries']['data'] = $book->countries;
-        $this->graph_data['countries']['total']
-            = $this->graph_data['continents']['total']
-            = $book->total_country_readership;
-        $this->graph_data['continents']['data'] = $book->continents;
-        $graph_data = $this->graph_data;
-        $colours = $this->colours;
-
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
-        $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
         $is_pdf = false;
         $is_public = true;
 
         return view('books.public-report-headers',
-            compact('book', 'data', 'year', 'is_pdf', 'is_public',
-                    'map_url', 'graph_data', 'colours'));
+            compact('book', 'data', 'year', 'is_pdf', 'is_public'));
     }
 
     /**
@@ -134,7 +91,7 @@ class BooksController extends Controller
         $data['readership'] = $this->table_data['readership'];
         $this->table_data['downloads']['data'] = $book->downloads;
         $data['downloads'] = $this->table_data['downloads'];
-        
+
         // include sales if they are public or if user has access to them
         if ($book->areSalesPublic() || (Auth::user() !== null
             && Auth::user()->hasAccessToSalesOfBook($book->book_id))) {
@@ -166,34 +123,6 @@ class BooksController extends Controller
     }
 
     /**
-     * Render a view with readership graphs
-     *
-     * @param type $book_id
-     * @return Response
-     */
-    public function readershipGraphs($book_id)
-    {
-        $book = Book::findOrFail($book_id);
-        if (!$book->isPublished()) {
-            Session::flash('info', $book->getNotPublishedMessage());
-            return back();
-        }        
-
-        $book->loadCountryReadership();
-        $book->loadContinentReadership();
-        $this->graph_data['countries']['data'] = $book->countries;
-        $this->graph_data['countries']['total']
-            = $this->graph_data['continents']['total']
-            = $book->total_country_readership;
-        $this->graph_data['continents']['data'] = $book->continents;
-        $graph_data = $this->graph_data;
-        $colours = $this->colours;
-        
-        return view('books.graphs-headers',
-            compact('book', 'graph_data', 'colours'));
-    }
-
-    /**
      * Render a view with an iframe to the readership map
      *
      * @param int $book_id
@@ -207,9 +136,7 @@ class BooksController extends Controller
             return back();
         }
 
-        $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
-        
-        return view('books.map-headers', compact('book', 'map_url'));
+        return view('books.map-headers', compact('book'));
     }
 
     /**
@@ -253,7 +180,7 @@ class BooksController extends Controller
         $data = $this->getTableData($book, $year);
         $is_pdf = true;
         $is_public = false;
-        
+
         return View::make('books.report-html',
             compact('book', 'data', 'year', 'is_pdf', 'is_public'));
     }
@@ -293,12 +220,12 @@ class BooksController extends Controller
         $name = "Metrics_Report";
         $title = $year !== null ? $year . "_" . $name : $name;
         $filename = $title . "-" . $book->sanitisedTitle() . ".pdf";
-        
+
         return new Response($this->fullReportPdf($book_id, $year), 200, [
             'Content-Description' => 'File Transfer',
             'Content-Disposition' => 'attachment; filename="'.$filename.'"',
             'Content-Transfer-Encoding' => 'binary',
             'Content-Type' => 'application/pdf',
-        ]);   
+        ]);
     }
 }

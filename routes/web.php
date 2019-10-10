@@ -26,9 +26,6 @@ Route::get('/book/report/pdf/{book_id}/{year?}',
            'BooksController@downloadFullReport')
     ->middleware('auth')
     ->name('download-report');
-Route::get('/readership/graphs/{book_id}', 'BooksController@readershipGraphs')
-    ->middleware('auth')
-    ->name('graphs');
 Route::get('/readership/map/{book_id}', 'BooksController@readershipMap')
     ->middleware('auth')
     ->name('map');
