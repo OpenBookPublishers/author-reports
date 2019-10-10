@@ -83,15 +83,6 @@
                                             </li>
                                             
                                             <li>
-                                                <a href="{{ route('graphs',
-                                            ['book_id' => $book->book_id]) }}">
-                                                <i class="fa fa-bar-chart-o"
-                                                   aria-hidden="true"></i>
-                                                Readership Graphs
-                                                </a>
-                                            </li>
-                                            
-                                            <li>
                                                 <a href="{{ route('map',
                                             ['book_id' => $book->book_id]) }}">
                                                 <i class="fa fa-globe"

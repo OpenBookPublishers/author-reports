@@ -5,6 +5,5 @@
 
     @include('books.report-container')
     @include('books.map-container')
-    @include('books.graphs-container')
 
 @endsection
