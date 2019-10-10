@@ -1,6 +1,4 @@
-<div id="chartdiv" class="panel-body"
-      style="width: 100%;height:95vh">
-</div>
+<div id="chartdiv"  style="width: 100%; height:100%;"></div>
 
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
@@ -65,6 +63,8 @@ chart.dataSource.events.on("parseended", function(ev) {
     polygonSeries.data = data;
     return data;
 });
+
+chart.exporting.menu = new am4core.ExportMenu();
 
 // country area look and behavior
 var polygonTemplate = polygonSeries.mapPolygons.template;

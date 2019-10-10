@@ -10,7 +10,12 @@
                     const apiEndp = 'https://metrics.api.openbookpublishers.com';
                     const workUri = "{{ $book->getWorkUriStr() }}";
                 </script>
-                @include('books.map')
+                <div class="panel-body" style="width: 100%;height:95vh">
+                    @include('books.map')
+                    <p class="text-muted" style="margin-top: -1.5em; margin-left: 5em;">
+                        <i class="fa fa-info-circle" aria-hidden="true"></i> Geographical data is only available for a small subset of the total readership data.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
