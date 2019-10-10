@@ -2,6 +2,6 @@
 @section('title', 'Readership Map')
 @section('content')
 
-    @include('books.map')
+    @include('books.map-container')
 
 @endsection

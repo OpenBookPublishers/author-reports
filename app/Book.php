@@ -12,24 +12,6 @@ class Book extends Model
     public $primaryKey = "book_id";
     public $years_active;
 
-    private $stats_measures_aliases = [
-        "(Grokstat) Daily Views" => "Wikimedia",
-        "(GoogleAnalytics) HTML Visits" => "OBP HTML Reader",
-        "(GoogleAnalytics) Scribd Visits" => "OBP PDF Reader",
-        "(WorldReaderBinu) Total Opens" => "World Reader",
-        "(WorldReaderWeb) Total Opens" => "World Reader",
-        "(OpenEdition) Total Book Views" => "Open Edition",
-        "(GoogleBooks) Book Visits (BV)" => "Google Books",
-        "(ClassicsLibrary) Sessions" => "Classics Library",
-        "(Internet Archive) Views" => "Internet Archive"
-    ];
-    private $downloads_measures_aliases = [
-        "(DownloadLogs) Downloads" => "OBP Website",
-        "(SalesCSVDownloads) Downloads" => "Retail Distributors",
-        "(Ungluit) Downloads" => "Unglue.it",
-        "(OAPEN) Downloads" => "OAPEN",
-    ];
-
     public $quarters = [
         1 => "First Quarter",
         2 => "Second Quarter",
@@ -40,8 +22,6 @@ class Book extends Model
     public function loadAllData($year = null)
     {
         $this->years_active = $this->getYearsActive();
-        $this->loadCountryReadership();
-        $this->loadContinentReadership();
         $this->loadReadership($year);
         $this->loadSales($year);
         $this->loadDownloads($year);
@@ -54,7 +34,7 @@ class Book extends Model
 
     public function loadSales($year = null)
     {
-        $this->sales = $this->getStats("sales", $year);
+        $this->sales = $this->getSales("sales", $year);
     }
 
     public function loadDownloads($year = null)
@@ -153,56 +133,6 @@ class Book extends Model
                 - $royalties['Royalties paid'];
 
         return $royalties;
-    }
-
-    /**
-     * Load the countries array
-     */
-    public function loadCountryReadership()
-    {
-        $countries  = [];
-        $data = $this->getReadershipPerCountry();
-        $count = count($data) - 1;
-        $total = 0;
-        $other = 0;
-
-        foreach ($data as $key => $result) {
-            if ($key <= $count - 10) {
-                $other += $result->readership;
-            } else {
-                $countries[$result->country_name] = $result->readership;
-            }
-            $total += $result->readership;
-        }
-        $countries['Other *'] = $other;
-        asort($countries);
-        $this->countries = $countries;
-        $this->total_country_readership = $total;
-        $this->total_countries = count($data);
-    }
-
-    /**
-     * Load the continents array
-     */
-    public function loadContinentReadership()
-    {
-        $continents = [];
-        $data = $this->getReadershipPerContinent();
-        foreach ($data as $result) {
-            $continents[$result->continent_code] = $result->readership;
-        }
-        $this->continents = $continents;
-    }
-
-    /**
-     * Get the authors associated with this book
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function authors()
-    {
-        return $this->belongsToMany('App\Author', 'book_author',
-                                    'book_id', 'author_id');
     }
 
     /**
@@ -362,26 +292,41 @@ class Book extends Model
         return $formats;
     }
 
-    private function getMeasures($type)
+    private function getStats($type, $year = null)
     {
-        switch ($type) {
-            case "readership": return $this->stats_measures_aliases;
-            case "downloads":  return $this->downloads_measures_aliases;
-            case "sales":      return $this->getFormats();
+        $stats = [];
+        $data = $this->getReadershipByMeasureYear($year);
+        $key = $year === null ? "year" : "month";
+        $downloads = $type === "downloads";
+
+        foreach ($data as $measure) {
+            $is_download = $measure->type === "downloads";
+            if (($downloads && !$is_download) ||
+                (!$downloads && $is_download)) {
+                continue;
+            }
+            $source = $measure->source . " " . ucfirst($measure->type);
+            $measurement = [];
+            foreach ($this->years_active as $y => $month) {
+                if ($year === null) {
+                    $measurement[$y] = 0;
+                } elseif ($year === $y) {
+                    foreach ($month as $m => $tmp) {
+                        $measurement[$m] = 0;
+                    }
+                }
+            }
+            foreach ($measure->data as $date) {
+                $measurement[$date->$key] = (int)$date->value;
+            }
+            $stats[$source] = $measurement;
         }
+        return $stats;
     }
 
     private function getMeasurement($type, $measure, $alias, $year, $month = null)
     {
         switch ($type) {
-            case "readership":
-            case "downloads":
-                if ($month === null) {
-                    return $this->getReadershipMeasureYear($measure, $year);
-                } else {
-                    return $this->getReadershipMeasureMonth($measure, $year,
-                                                           $month);
-                }
             case "sales":
                 if ($month === null) {
                     return $this->getSalesFormatYear($alias, $year);
@@ -391,10 +336,10 @@ class Book extends Model
         }
     }
 
-    private function getStats($type, $year = null)
+    private function getSales($type, $year = null)
     {
         $stats = [];
-        $measures = $this->getMeasures($type);
+        $measures = $this->getFormats();
 
         foreach ($measures as $measure => $alias) {
             if (!isset($stats[$alias])) {
@@ -730,108 +675,49 @@ class Book extends Model
         return $result->total !== null ? (float) $result->total : 0.00;
     }
 
-    private function getReadershipPerCountry()
+    public function getWorkUriStr()
     {
-        return DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->join('Measures', 'Measures.measure_id', '=',
-                'EventMeasurements.measure_id')
-            ->select( DB::raw('SUM(`value`) as readership'), 'country_name')
-            ->where([
-                ['doi', '=', $this->doi],
-                ['country_name', '<>', "(not set)"],
-                ['free_view', '=', 1]])
-            ->groupBy('country_name')
-            ->orderBy('readership')
-            ->get()
-            ->toArray();
+        return 'info:doi:' . strtolower($this->doi);
     }
 
-    private function getReadershipPerContinent()
+    private function getMeasureUriStr($measure)
     {
-        return DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->join('Measures', 'Measures.measure_id', '=',
-                'EventMeasurements.measure_id')
-            ->select( DB::raw('SUM(`value`) as readership'), 'continent_code')
-            ->where([
-                ['doi', '=', $this->doi],
-                ['continent_code', '<>', "--"],
-                ['free_view', '=', 1]])
-            ->groupBy('continent_code')
-            ->orderBy('readership')
-            ->get()
-            ->toArray();
+        return 'measure_uri:' . strtolower($measure);
+    }
+
+    private function getEvents($filter = '', $aggregation = '', $start = '',
+                               $end = '')
+    {
+        $request = url(config('app.api').'/events'
+            . '?filter=' . $filter
+            . '&aggregation=' . $aggregation
+            . '&start_date=' . $start
+            . '&end_date=' . $end);
+        if (substr(get_headers($request)[0], 9, 3) !== "200") {
+                return [];
+        }
+        $response = file_get_contents($request);
+        $result = json_decode($response);
+        return $result->count !== 0 ? $result->data : [];
     }
 
     /**
-     * Obtain the total readership of a particular measure in a given year
-     * for this book.
+     * Obtain the total readership aggregated by measure for this book
      *
      * @param string $measure
      * @param int $year
-     * @return int
+     * @return array
      */
-    private function getReadershipMeasureYear($measure, $year)
+    private function getReadershipByMeasureYear($year = null)
     {
-        $result = DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Measures','EventMeasurements.measure_id', '=',
-                'Measures.measure_id')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->select( DB::raw('SUM(`value`) as readership'))
-            ->whereYear('timestamp', $year)
-            ->where([
-                ['measure_description', '=', $measure],
-                ['doi', '=', $this->doi]])
-            ->first();
+        $start_date = $year !== null ? "${year}-01-01" : "";
+        $end_date = $year !== null ? "${year}-12-31" : "";
+        $aggregation = $year !== null ? "measure_uri,month"
+                                      : "measure_uri,year";
+        $work_uri = 'work_uri:' . $this->getWorkUriStr();
 
-        return $result->readership !== null ? $result->readership : 0;
-    }
-
-    /**
-     * Obtain the total readership of a particular measure in a given year
-     * and month for this book.
-     *
-     * @param string $measure
-     * @param int $year
-     * @param int $month
-     * @return int
-     */
-    private function getReadershipMeasureMonth($measure, $year, $month)
-    {
-        $result = DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Measures','EventMeasurements.measure_id', '=',
-                'Measures.measure_id')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->select( DB::raw('SUM(`value`) as readership'))
-            ->whereYear('timestamp', $year)
-            ->whereMonth('timestamp', $month)
-            ->where([
-                ['measure_description', '=', $measure],
-                ['doi', '=', $this->doi]])
-            ->first();
-
-        return $result->readership !== null ? $result->readership : 0;
+        return $this->getEvents($this->getWorkUriStr(), $aggregation,
+                                $start_date, $end_date);
     }
 
     /**

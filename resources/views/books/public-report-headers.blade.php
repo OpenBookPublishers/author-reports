@@ -4,7 +4,6 @@
 @section('content')
 
     @include('books.report-container')
-    @include('books.map')
-    @include('books.graphs-container')
+    @include('books.map-container')
 
 @endsection
