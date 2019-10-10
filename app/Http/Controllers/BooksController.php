@@ -112,13 +112,12 @@ class BooksController extends Controller
 
         $year = $year !== null ? (int) $year : null;
         $data = $this->getTableData($book, $year);
-        $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
         $is_pdf = false;
         $is_public = true;
 
         return view('books.public-report-headers',
             compact('book', 'data', 'year', 'is_pdf', 'is_public',
-                    'map_url', 'graph_data', 'colours'));
+                    'graph_data', 'colours'));
     }
 
     /**
@@ -207,9 +206,7 @@ class BooksController extends Controller
             return back();
         }
 
-        $map_url = "https://data.openbookpublishers.com/static/map/book-countries.html?doi=" . $book->doi;
-        
-        return view('books.map-headers', compact('book', 'map_url'));
+        return view('books.map-headers', compact('book'));
     }
 
     /**
