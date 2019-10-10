@@ -11,7 +11,7 @@
                     </div>
 
                     <div class="panel-body table-responsive">
-                        
+
                         <table class="table table-hover">
                             <tr>
                                 <th>Title</th>
@@ -38,7 +38,7 @@
                                         @if (isset($author->user))
                                         <li>
                                             <a href="{{ route('edit-user',
-                                            ['user_id' => 
+                                            ['user_id' =>
                                               $author->user->user_id]) }}">
                                             {{ $author->author_name }}
                                             </a>
@@ -59,10 +59,10 @@
                                                 aria-expanded="true">
                                             Actions <span class="caret"></span>
                                         </button>
-                                        
+
                                         <ul class="dropdown-menu dropdown-menu-right"
                                             aria-labelledby="dropdownMenu1">
-                                            
+
                                             <li>
                                                 <a href="{{ route('report',
                                             ['book_id' => $book->book_id]) }}">
@@ -71,7 +71,7 @@
                                                 Metrics Report
                                                 </a>
                                             </li>
-                                            
+
                                             <li>
                                                 <a data-toggle="modal"
                                                    data-target="#pdf-{{ $book->book_id }}"
@@ -81,7 +81,7 @@
                                                 Metrics Report (PDF)
                                                 </a>
                                             </li>
-                                            
+
                                             <li>
                                                 <a href="{{ route('map',
                                             ['book_id' => $book->book_id]) }}">
@@ -97,7 +97,7 @@
                             @include('../pdf-selector')
                             @endforeach
                         </table>
-                        
+
                     </div>
                 </div>
             </div>
