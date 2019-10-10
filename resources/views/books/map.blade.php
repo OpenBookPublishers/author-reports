@@ -59,6 +59,7 @@ chart.dataSource.events.on("parseended", function(ev) {
         for (var measure in result[country]['data']) {
             var value = result[country]['data'][measure]['value'];
             var source = result[country]['data'][measure]['source'];
+            source = source.replace('Open Book Publishers', 'OBP');
             var type = result[country]['data'][measure]['type'];
             var category = source + ' ' + type;
             measures.push({value: value, category: category});
