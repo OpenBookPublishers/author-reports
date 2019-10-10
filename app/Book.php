@@ -22,8 +22,6 @@ class Book extends Model
     public function loadAllData($year = null)
     {
         $this->years_active = $this->getYearsActive();
-        $this->loadCountryReadership();
-        $this->loadContinentReadership();
         $this->loadReadership($year);
         $this->loadSales($year);
         $this->loadDownloads($year);
@@ -135,56 +133,6 @@ class Book extends Model
                 - $royalties['Royalties paid'];
 
         return $royalties;
-    }
-
-    /**
-     * Load the countries array
-     */
-    public function loadCountryReadership()
-    {
-        $countries  = [];
-        $data = $this->getReadershipPerCountry();
-        $count = count($data) - 1;
-        $total = 0;
-        $other = 0;
-
-        foreach ($data as $key => $result) {
-            if ($key <= $count - 10) {
-                $other += $result->readership;
-            } else {
-                $countries[$result->country_name] = $result->readership;
-            }
-            $total += $result->readership;
-        }
-        $countries['Other *'] = $other;
-        asort($countries);
-        $this->countries = $countries;
-        $this->total_country_readership = $total;
-        $this->total_countries = count($data);
-    }
-
-    /**
-     * Load the continents array
-     */
-    public function loadContinentReadership()
-    {
-        $continents = [];
-        $data = $this->getReadershipPerContinent();
-        foreach ($data as $result) {
-            $continents[$result->continent_code] = $result->readership;
-        }
-        $this->continents = $continents;
-    }
-
-    /**
-     * Get the authors associated with this book
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function authors()
-    {
-        return $this->belongsToMany('App\Author', 'book_author',
-                                    'book_id', 'author_id');
     }
 
     /**
@@ -727,9 +675,9 @@ class Book extends Model
         return $result->total !== null ? (float) $result->total : 0.00;
     }
 
-    private function getWorkUriStr()
+    public function getWorkUriStr()
     {
-        return 'work_uri:info:doi:' . strtolower($this->doi);
+        return 'info:doi:' . strtolower($this->doi);
     }
 
     private function getMeasureUriStr($measure)
@@ -753,57 +701,6 @@ class Book extends Model
         return $result->count !== 0 ? $result->data : [];
     }
 
-    private function getReadershipPerCountry()
-    {
-        //TODO $data = $this->getEvents($this->getWorkUriStr(), "country_uri");
-        return [];
-        /*
-        return DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->join('Measures', 'Measures.measure_id', '=',
-                'EventMeasurements.measure_id')
-            ->select( DB::raw('SUM(`value`) as readership'), 'country_name')
-            ->where([
-                ['doi', '=', $this->doi],
-                ['country_name', '<>', "(not set)"],
-                ['free_view', '=', 1]])
-            ->groupBy('country_name')
-            ->orderBy('readership')
-            ->get()
-            ->toArray();
-        */
-    }
-
-    private function getReadershipPerContinent()
-    {
-        return [];
-        /*
-        return DB::connection('mysql-stats')
-            ->table('EventMeasurements')
-            ->join('Events','EventMeasurements.event_id', '=',
-                'Events.event_id')
-            ->join('Countries', 'Countries.country_id', '=',
-                'Events.country_id')
-            ->join('Doi', 'Events.book_id', '=', 'Doi.book_id')
-            ->join('Measures', 'Measures.measure_id', '=',
-                'EventMeasurements.measure_id')
-            ->select( DB::raw('SUM(`value`) as readership'), 'continent_code')
-            ->where([
-                ['doi', '=', $this->doi],
-                ['continent_code', '<>', "--"],
-                ['free_view', '=', 1]])
-            ->groupBy('continent_code')
-            ->orderBy('readership')
-            ->get()
-            ->toArray();
-        */
-    }
-
     /**
      * Obtain the total readership aggregated by measure for this book
      *
@@ -817,6 +714,7 @@ class Book extends Model
         $end_date = $year !== null ? "${year}-12-31" : "";
         $aggregation = $year !== null ? "measure_uri,month"
                                       : "measure_uri,year";
+        $work_uri = 'work_uri:' . $this->getWorkUriStr();
 
         return $this->getEvents($this->getWorkUriStr(), $aggregation,
                                 $start_date, $end_date);
