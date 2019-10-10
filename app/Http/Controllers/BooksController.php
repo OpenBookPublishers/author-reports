@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Session;
 
 class BooksController extends Controller
 {
-    
+
     private $table_data = [
         "readership" => [
             "title" => "Online Readership",
@@ -91,7 +91,7 @@ class BooksController extends Controller
         $data['readership'] = $this->table_data['readership'];
         $this->table_data['downloads']['data'] = $book->downloads;
         $data['downloads'] = $this->table_data['downloads'];
-        
+
         // include sales if they are public or if user has access to them
         if ($book->areSalesPublic() || (Auth::user() !== null
             && Auth::user()->hasAccessToSalesOfBook($book->book_id))) {
@@ -180,7 +180,7 @@ class BooksController extends Controller
         $data = $this->getTableData($book, $year);
         $is_pdf = true;
         $is_public = false;
-        
+
         return View::make('books.report-html',
             compact('book', 'data', 'year', 'is_pdf', 'is_public'));
     }
@@ -220,12 +220,12 @@ class BooksController extends Controller
         $name = "Metrics_Report";
         $title = $year !== null ? $year . "_" . $name : $name;
         $filename = $title . "-" . $book->sanitisedTitle() . ".pdf";
-        
+
         return new Response($this->fullReportPdf($book_id, $year), 200, [
             'Content-Description' => 'File Transfer',
             'Content-Disposition' => 'attachment; filename="'.$filename.'"',
             'Content-Transfer-Encoding' => 'binary',
             'Content-Type' => 'application/pdf',
-        ]);   
+        ]);
     }
 }
