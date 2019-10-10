@@ -1,4 +1,12 @@
-<div id="chartdiv"  style="width: 100%; height:100%;"></div>
+<style>
+  #chartdiv {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    width: 100%;
+    height:100%;
+  }
+</style>
+
+<div id="chartdiv"></div>
 
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
