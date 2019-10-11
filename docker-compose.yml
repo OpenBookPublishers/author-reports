@@ -11,9 +11,6 @@ services:
       - ./.env:/var/www/html/.env:ro
     depends_on:
       - author-reports
-    networks:
-      proxy:
-        ipv4_address: 172.30.0.3
 
   author-reports:
     image: openbookpublishers/author-reports
@@ -22,19 +19,6 @@ services:
     volumes:
       - ./.env:/var/www/html/.env:ro
       - author-reports:/var/www/html
-    networks:
-      - obpnet
-      - proxy
 
 volumes:
   author-reports:
-
-networks:
-  proxy:
-    driver: bridge
-    ipam:
-      config:
-      - subnet: 172.30.0.0/29
-  obpnet:
-    external:
-      name: obpnet
