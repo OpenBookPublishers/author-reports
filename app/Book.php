@@ -716,7 +716,7 @@ class Book extends Model
                                       : "measure_uri,year";
         $work_uri = 'work_uri:' . $this->getWorkUriStr();
 
-        return $this->getEvents($this->getWorkUriStr(), $aggregation,
+        return $this->getEvents($work_uri, $aggregation,
                                 $start_date, $end_date);
     }
 
