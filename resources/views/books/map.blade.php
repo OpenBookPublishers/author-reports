@@ -43,6 +43,22 @@ polygonSeries.useGeodata = true;
 // Remove Antarctica
 polygonSeries.exclude = ["AQ"];
 
+// country label
+var countryLabel = chart.chartContainer.createChild(am4core.Label);
+countryLabel.text = "";
+countryLabel.fill = am4core.color("#7678a0");
+countryLabel.fontSize = 20;
+
+countryLabel.hiddenState.properties.dy = 1000;
+countryLabel.defaultState.properties.dy = 0;
+countryLabel.valign = "top";
+countryLabel.align = "left";
+countryLabel.paddingRight = 50;
+countryLabel.hide(0);
+
+var totalReadership = 0;
+var totalNonGeographical = 0;
+var knownPercentage = 0.00;
 chart.dataSource.url = apiEndp + '/events?filter=work_uri:' + workUri + '&aggregation=country_uri,measure_uri';
 chart.dataSource.events.on("parseended", function(ev) {
     var result = ev.target.data.data;
@@ -53,9 +69,6 @@ chart.dataSource.events.on("parseended", function(ev) {
         var countryTotal = 0;
         var measures = [];
         var countryCode = result[country]['country_code'];
-        if (!countryCode) {
-            continue;
-        }
         for (var measure in result[country]['data']) {
             var value = result[country]['data'][measure]['value'];
             var source = result[country]['data'][measure]['source'];
@@ -65,11 +78,20 @@ chart.dataSource.events.on("parseended", function(ev) {
             measures.push({value: value, category: category});
             countryTotal += value;
         }
+        totalReadership += countryTotal;
+        if (!countryCode) {
+            totalNonGeographical += countryTotal;
+            continue;
+        }
         measureData[countryCode] = measures;
         data.push({id: countryCode, value: countryTotal});
     }
     chart.dataSource.data = measureData;
     polygonSeries.data = data;
+    knownPercentage = (((totalReadership - totalNonGeographical) * 100) / totalReadership).toFixed(2);
+    countryLabel.text = "Geographical data is only available for " + knownPercentage + "% of our total figures for this book.";
+    countryLabel.show();
+
     return data;
 });
 
