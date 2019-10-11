@@ -136,6 +136,17 @@ class Book extends Model
     }
 
     /**
+     * Get the authors associated with this book
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function authors()
+    {
+        return $this->belongsToMany('App\Author', 'book_author',
+                                    'book_id', 'author_id');
+    }
+
+    /**
      * Get the volumes associated with this book
      *
      * @return \Illuminate\Database\Eloquent\Relations\hasMany
@@ -716,7 +727,7 @@ class Book extends Model
                                       : "measure_uri,year";
         $work_uri = 'work_uri:' . $this->getWorkUriStr();
 
-        return $this->getEvents($this->getWorkUriStr(), $aggregation,
+        return $this->getEvents($work_uri, $aggregation,
                                 $start_date, $end_date);
     }
 

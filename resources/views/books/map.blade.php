@@ -1,4 +1,12 @@
-<div id="chartdiv"  style="width: 100%; height:100%;"></div>
+<style>
+  #chartdiv {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    width: 100%;
+    height:100%;
+  }
+</style>
+
+<div id="chartdiv"></div>
 
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
@@ -51,6 +59,7 @@ chart.dataSource.events.on("parseended", function(ev) {
         for (var measure in result[country]['data']) {
             var value = result[country]['data'][measure]['value'];
             var source = result[country]['data'][measure]['source'];
+            source = source.replace('Open Book Publishers', 'OBP');
             var type = result[country]['data'][measure]['type'];
             var category = source + ' ' + type;
             measures.push({value: value, category: category});
