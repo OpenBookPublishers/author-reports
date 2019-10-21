@@ -317,6 +317,7 @@ class Book extends Model
                 continue;
             }
             $source = $measure->source . " " . ucfirst($measure->type);
+            $source = str_replace("Open Book Publishers", "OBP", $source);
             $measurement = [];
             foreach ($this->years_active as $y => $month) {
                 if ($year === null) {
