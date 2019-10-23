@@ -96,6 +96,32 @@ chart.dataSource.events.on("parseended", function(ev) {
 });
 
 chart.exporting.menu = new am4core.ExportMenu();
+chart.exporting.menu.items = [{
+      label: "...",
+      menu: [
+        {
+          label: "Image",
+          menu: [
+            { type: "png", label: "PNG" },
+            { type: "jpg", label: "JPG" },
+            { type: "gif", label: "GIF" },
+            { type: "svg", label: "SVG" },
+            { type: "pdf", label: "PDF" }
+          ]
+        }, {
+          label: "Data",
+          menu: [
+            { type: "json", label: "JSON", type: "custom", options: {
+                callback: function() {
+                    window.location = chart.dataSource.url;
+                }
+            }}
+          ]
+        }, {
+          label: "Print", type: "print"
+        }
+      ]
+    }];
 
 // country area look and behavior
 var polygonTemplate = polygonSeries.mapPolygons.template;
