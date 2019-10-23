@@ -89,7 +89,7 @@ chart.dataSource.events.on("parseended", function(ev) {
     chart.dataSource.data = measureData;
     polygonSeries.data = data;
     knownPercentage = (((totalReadership - totalNonGeographical) * 100) / totalReadership).toFixed(2);
-    countryLabel.text = "Geographical data is only available for " + knownPercentage + "% of our total figures for this book.";
+    countryLabel.text = "Geographical data is available for " + knownPercentage + "% of our total figures for this book.";
     countryLabel.show();
 
     return data;
