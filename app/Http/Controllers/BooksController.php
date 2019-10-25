@@ -101,7 +101,7 @@ class BooksController extends Controller
 
         // include royalties if user has access
         if (Auth::user() !== null
-            && Auth::user()->isAdmin()
+            && Auth::user()->hasAccessToRoyaltyOfBook()
             && $book->hasRoyalty()) {
             foreach ($book->royaltyAgreements as $key => $agreement) {
                 if (Auth::user()->isAdmin()

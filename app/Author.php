@@ -78,7 +78,7 @@ class Author extends Model
      */
     public function hasRoyaltyOfBook($book_id)
     {
-        foreach ($this->royaltyRecipient as $royaltyRecipient) {
+        foreach ($this->royaltyRecipients as $royaltyRecipient) {
             if ($royaltyRecipient->hasAgreementOfBook($book_id)) {
                 return true;
             }
@@ -95,7 +95,7 @@ class Author extends Model
      */
     public function hasAgreement($agreement_id)
     {
-        foreach ($this->royaltyRecipient as $royaltyRecipient) {
+        foreach ($this->royaltyRecipients as $royaltyRecipient) {
             if ($royaltyRecipient->royalty_agreement_id === $agreement_id) {
                 return true;
             }

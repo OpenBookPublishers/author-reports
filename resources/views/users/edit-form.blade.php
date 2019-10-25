@@ -77,6 +77,47 @@
                             </div>
                         </div>
 
+                        <div class="form-group{{ $errors->has('display_royalties')
+                                                    ? ' has-error' : '' }}">
+                            <label for="display_royalties"
+                                   class="col-md-4 control-label">
+                                Display royalties to this author
+                            </label>
+
+                            <div class="col-md-6">
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"
+                                               name="display_royalties"
+                                               {{ $user->display_royalties ?
+                                               'checked="checked"'
+                                               : '' }}
+                                               value="true" autofocus>
+                                        Yes
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"
+                                               name="display_royalties" 
+                                               {{ !$user->display_royalties ?
+                                               'checked="checked"'
+                                               : '' }}
+                                               value="false" autofocus>
+                                        No
+                                    </label>
+                                </div>
+
+                                @if ($errors->has('display_royalties'))
+                                    <span class="help-block">
+                                        <strong>
+                                          {{ $errors->first('display_royalties') }}
+                                        </strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="form-group{{ $errors->has('admin')
                                                     ? ' has-error' : '' }}">
                             <label for="admin"
