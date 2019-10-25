@@ -88,6 +88,7 @@ class UsersController extends Controller
             $user->fill($input);
             $user->admin = $input['admin'] === "true" ? 1 : 0;
             $user->display_sales = $input['display_sales'] === "true" ? 1 : 0;
+            $user->display_royalties = $input['display_royalties'] === "true" ? 1 : 0;
             $updated = $user->save();
         }
 

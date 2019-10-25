@@ -21,7 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'surname', 'email', 'password', 'orcid',
-        'twitter', 'repositories'
+        'twitter', 'repositories', 'display_sales', 'display_royalties'
     ];
 
     /**
@@ -51,6 +51,16 @@ class User extends Authenticatable
     public function wantsSalesDataPrivate()
     {
         return $this->display_sales === 0 ? true : false;
+    }
+
+    /**
+     * Determine whether this user can see royalties.
+     *
+     * @return boolean
+     */
+    public function isAllowedToSeeRoyalties()
+    {
+        return $this->display_royalties === 1;
     }
 
     /**
@@ -136,7 +146,8 @@ class User extends Authenticatable
     {
         return $this->isAdmin()
             || ($this->author !== null
-                && $this->author->hasRoyaltyOfBook($book_id));
+                && $this->author->hasRoyaltyOfBook($book_id)
+                && $this->isAllowedToSeeRoyalties());
     }
 
     /**
