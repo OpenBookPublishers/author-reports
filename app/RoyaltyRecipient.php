@@ -65,11 +65,12 @@ class RoyaltyRecipient extends Model
      *
      * @return float
      */
-    public function getTotalPayments()
+    public function getTotalPayments($is_donation = 0)
     {
         $result =  DB::table('royalty_payment')
             ->select(DB::raw('SUM(`payment_value`) as total'))
             ->where('royalty_recipient_id', '=', $this->royalty_recipient_id)
+            ->where('is_donation', $is_donation)
             ->first();
 
         return $result->total !== null ? (float) $result->total : 0.00;
@@ -82,12 +83,13 @@ class RoyaltyRecipient extends Model
      * @param int|null $quarter
      * @return float
      */
-    public function getTotalPaymentsInYear($year, $quarter = null)
+    public function getTotalPaymentsInYear($year, $quarter = null, $is_donation = 0)
     {
         $q = DB::table('royalty_payment')
             ->select(DB::raw('SUM(`payment_value`) as total'))
             ->whereYear('payment_date', $year)
-            ->where('royalty_recipient_id', '=', $this->royalty_recipient_id);
+            ->where('royalty_recipient_id', '=', $this->royalty_recipient_id)
+            ->where('is_donation', $is_donation);
         if ($quarter) {
             $q = $q->whereRaw('QUARTER(payment_date) = ?', [$quarter]);
         }

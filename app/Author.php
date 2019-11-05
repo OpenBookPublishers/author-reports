@@ -145,13 +145,16 @@ class Author extends Model
             $royalties[] = $result;
         }
         $this->royalties_arising = 0.00;
+        $this->royalties_donated = 0.00;
         $this->royalties_paid = 0.00;
         $this->amount_due = 0.00;
         foreach ($royalties as $royalty) {
             $this->royalties_arising += $royalty['Royalties arising'];
+            $this->royalties_donated += $royalty['Royalties donated'];
             $this->royalties_paid += $royalty['Royalties paid'];
         }
         $this->amount_due = $this->royalties_arising
+                - $this->royalties_donated
                 - $this->royalties_paid;
         $this->royalties = $royalties;
     }

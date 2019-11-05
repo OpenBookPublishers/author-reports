@@ -19,6 +19,7 @@
                             <th>Threshold unit</th>
                             <th>Rate</th>
                             <th>Royalties arising</th>
+                            <th>Royalties donated</th>
                             <th>Royalties paid</th>
                             <th>Amount due</th>
                             <th></th>
@@ -59,6 +60,11 @@
                             <td>
                                 {{ number_format(
                                             $author->royalties_arising,
+                                            2, '.', '') }}
+                            </td>
+                            <td>
+                                {{ number_format(
+                                            $author->royalties_donated,
                                             2, '.', '') }}
                             </td>
                             <td>
@@ -130,6 +136,11 @@
                             <td>
                                 {{ number_format(
                                           $agreement['Royalties arising'],
+                                          2, '.', '') }}
+                            </td>
+                            <td>
+                                {{ number_format(
+                                          $agreement['Royalties donated'],
                                           2, '.', '') }}
                             </td>
                             <td>

@@ -95,11 +95,15 @@ class Book extends Model
               $royalties['Net Rev Total'][$p], $total_net, $salesThisPeriod);
             $royalties['Royalties arising'][$p] += $royalty;
 
+            $royalties['Royalties donated'][$p] = $year === null
+              ? $agreement->royaltyRecipient->getTotalPaymentsInYear($p,null,1)
+              : $agreement->royaltyRecipient->getTotalPaymentsInYear($year,$p,1);
             $royalties['Royalties paid'][$p] = $year === null
               ? $agreement->royaltyRecipient->getTotalPaymentsInYear($p)
               : $agreement->royaltyRecipient->getTotalPaymentsInYear($year,$p);
             $royalties['Amount due'][$p] =
                 $royalties['Royalties arising'][$p]
+                - $royalties['Royalties donated'][$p]
                 - $royalties['Royalties paid'][$p];
         }
 
@@ -127,9 +131,12 @@ class Book extends Model
                 $royalties['Net Sales Rev'],
                 $total_sales
             );
+        $royalties['Royalties donated'] = $agreement->royaltyRecipient
+                ->getTotalPayments(1);
         $royalties['Royalties paid'] = $agreement->royaltyRecipient
                 ->getTotalPayments();
         $royalties['Amount due'] = $royalties['Royalties arising']
+                - $royalties['Royalties donated']
                 - $royalties['Royalties paid'];
 
         return $royalties;
