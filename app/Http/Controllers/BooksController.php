@@ -64,9 +64,12 @@ class BooksController extends Controller
         $doi = $doi_prefix . "/" . $doi_suffix;
         $book = Book::where('doi', '=', $doi)->firstOrFail();
 
+        Session::forget('info'); // reset message below in case returning visit
         if (!$book->isPublished()) {
             Session::flash('info', $book->getNotPublishedMessage());
-            return view('books.public-report-headers', compact('book'));
+            return response()
+                ->view('books.public-report-headers', compact('book'))
+                ->setStatusCode(400);
         }
 
         $year = $year !== null ? (int) $year : null;
