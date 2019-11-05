@@ -221,7 +221,7 @@ class Book extends Model
      */
     public function getNotPublishedMessage()
     {
-        return $this->title . " has not been published.";
+        return $this->title . " has not been published yet.";
     }
 
     /**
