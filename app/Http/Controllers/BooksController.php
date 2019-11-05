@@ -66,7 +66,7 @@ class BooksController extends Controller
 
         if (!$book->isPublished()) {
             Session::flash('info', $book->getNotPublishedMessage());
-            return back();
+            return view('books.public-report-headers', compact('book'));
         }
 
         $year = $year !== null ? (int) $year : null;
