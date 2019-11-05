@@ -3,7 +3,9 @@
 
 @section('content')
 
-    @include('books.report-container')
-    @include('books.map-container')
+    @if ($book->isPublished())
+        @include('books.report-container')
+        @include('books.map-container')
+    @endif
 
 @endsection
