@@ -64,6 +64,15 @@ class BooksController extends Controller
         header('Access-Control-Allow-Origin: *');
         $doi = $doi_prefix . "/" . $doi_suffix;
         $book = Book::where('doi', '=', $doi)->firstOrFail();
+        foreach ($book->authors as $author) {
+            $author->author_role = $author->pivot->role_name;
+            if ($author->user_id) {
+                $author->orcid = $author->user->orcid;
+            }
+            unset($author->pivot);
+            unset($author->user);
+        };
+        $book->volumes;
         return response()->json($book);
     }
 

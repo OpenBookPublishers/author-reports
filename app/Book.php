@@ -11,6 +11,7 @@ class Book extends Model
     public $table = "book";
     public $primaryKey = "book_id";
     public $years_active;
+    protected $hidden = ['book_id'];
 
     public $quarters = [
         1 => "First Quarter",
@@ -150,7 +151,8 @@ class Book extends Model
     public function authors()
     {
         return $this->belongsToMany('App\Author', 'book_author',
-                                    'book_id', 'author_id');
+                                    'book_id', 'author_id')
+                    ->withPivot('role_name');
     }
 
     /**
@@ -707,6 +709,10 @@ class Book extends Model
     private function getEvents($filter = '', $aggregation = '', $start = '',
                                $end = '')
     {
+        // see if request has been cached
+        if (Cache::has("sigs-${order}")) {
+            return response()->json(Cache::get("sigs-${order}"));
+        }
         $request = url(config('app.api').'/events'
             . '?filter=' . $filter
             . '&aggregation=' . $aggregation

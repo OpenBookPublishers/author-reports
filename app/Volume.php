@@ -9,6 +9,7 @@ class Volume extends Model
 
     public $table = "volume";
     public $primaryKey = "volume_id";
+    protected $hidden = ['volume_id', 'book_id', 'proper_isbn'];
 
     /**
      * Get the book associated with the volume
