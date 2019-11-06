@@ -59,14 +59,35 @@ class BooksController extends Controller
         return view('books.index', compact('books'));
     }
 
+    public function getJson($doi_prefix, $doi_suffix)
+    {
+        header('Access-Control-Allow-Origin: *');
+        $doi = $doi_prefix . "/" . $doi_suffix;
+        $book = Book::where('doi', '=', $doi)->firstOrFail();
+        foreach ($book->authors as $author) {
+            $author->author_role = $author->pivot->role_name;
+            if ($author->user_id) {
+                $author->orcid = $author->user->orcid;
+            }
+            unset($author->pivot);
+            unset($author->user);
+        };
+        $book->volumes;
+        return response()->json($book);
+    }
+
     public function publicReport($doi_prefix, $doi_suffix, $year = null)
     {
+        header('Access-Control-Allow-Origin: *');
         $doi = $doi_prefix . "/" . $doi_suffix;
         $book = Book::where('doi', '=', $doi)->firstOrFail();
 
+        Session::forget('info'); // reset message below in case returning visit
         if (!$book->isPublished()) {
             Session::flash('info', $book->getNotPublishedMessage());
-            return view('books.public-report-headers', compact('book'));
+            return response()
+                ->view('books.public-report-headers', compact('book'))
+                ->setStatusCode(400);
         }
 
         $year = $year !== null ? (int) $year : null;

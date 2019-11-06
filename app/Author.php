@@ -11,6 +11,7 @@ class Author extends Model
     public $table = "author";
     public $primaryKey = "author_id";
     public $timestamps = false;
+    protected $hidden = ['deceased', 'user_id', 'author_id'];
 
     /**
      * Get the books associated with this author
@@ -20,7 +21,8 @@ class Author extends Model
     public function books()
     {
         return $this->belongsToMany('App\Book', 'book_author',
-                                    'author_id', 'book_id');
+                                    'author_id', 'book_id')
+                    ->withPivot('role_name');
     }
 
     /**

@@ -34,19 +34,6 @@
                             </div>
                         </a>
 
-                        <a href="{{ route('graphs',
-                                    ['book_id' => $book->book_id]) }}"
-                           class="btn-large square relative">
-                            <div class="centered full-width">
-                                <i class="fa fa-bar-chart fa-large"
-                                   aria-hidden="true"></i>
-                                <br>
-                                <span class="full-width">
-                                    Readership Graphs
-                                </span>
-                            </div>
-                        </a>
-
                         <a href="{{ route('map',
                                     ['book_id' => $book->book_id]) }}"
                            target="_blank"

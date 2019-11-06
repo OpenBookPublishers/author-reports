@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Cache;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +13,7 @@ class Book extends Model
     public $table = "book";
     public $primaryKey = "book_id";
     public $years_active;
+    protected $hidden = ['book_id'];
 
     public $quarters = [
         1 => "First Quarter",
@@ -150,7 +153,8 @@ class Book extends Model
     public function authors()
     {
         return $this->belongsToMany('App\Author', 'book_author',
-                                    'book_id', 'author_id');
+                                    'book_id', 'author_id')
+                    ->withPivot('role_name');
     }
 
     /**
@@ -712,12 +716,19 @@ class Book extends Model
             . '&aggregation=' . $aggregation
             . '&start_date=' . $start
             . '&end_date=' . $end);
+        // see if request has been cached
+        if (Cache::has($request)) {
+            return Cache::get($request);
+        }
         if (substr(get_headers($request)[0], 9, 3) !== "200") {
-                return [];
+            return [];
         }
         $response = file_get_contents($request);
         $result = json_decode($response);
-        return $result->count !== 0 ? $result->data : [];
+        $output = $result->count !== 0 ? $result->data : [];
+        $expiresAt = Carbon::now()->addHour(12);
+        Cache::put($request, $output, $expiresAt);
+        return $output;
     }
 
     /**
