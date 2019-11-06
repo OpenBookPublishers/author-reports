@@ -11,6 +11,7 @@ class Author extends Model
     public $table = "author";
     public $primaryKey = "author_id";
     public $timestamps = false;
+    protected $hidden = ['deceased'];
 
     /**
      * Get the books associated with this author
