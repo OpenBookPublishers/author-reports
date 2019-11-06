@@ -61,6 +61,7 @@ class BooksController extends Controller
 
     public function publicReport($doi_prefix, $doi_suffix, $year = null)
     {
+        header('Access-Control-Allow-Origin: *');
         $doi = $doi_prefix . "/" . $doi_suffix;
         $book = Book::where('doi', '=', $doi)->firstOrFail();
 
