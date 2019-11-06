@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Cache;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
@@ -709,21 +711,24 @@ class Book extends Model
     private function getEvents($filter = '', $aggregation = '', $start = '',
                                $end = '')
     {
-        // see if request has been cached
-        if (Cache::has("sigs-${order}")) {
-            return response()->json(Cache::get("sigs-${order}"));
-        }
         $request = url(config('app.api').'/events'
             . '?filter=' . $filter
             . '&aggregation=' . $aggregation
             . '&start_date=' . $start
             . '&end_date=' . $end);
+        // see if request has been cached
+        if (Cache::has($request)) {
+            return Cache::get($request);
+        }
         if (substr(get_headers($request)[0], 9, 3) !== "200") {
-                return [];
+            return [];
         }
         $response = file_get_contents($request);
         $result = json_decode($response);
-        return $result->count !== 0 ? $result->data : [];
+        $output = $result->count !== 0 ? $result->data : [];
+        $expiresAt = Carbon::now()->addHour(12);
+        Cache::put($request, $output, $expiresAt);
+        return $output;
     }
 
     /**
