@@ -59,6 +59,14 @@ class BooksController extends Controller
         return view('books.index', compact('books'));
     }
 
+    public function getJson($doi_prefix, $doi_suffix)
+    {
+        header('Access-Control-Allow-Origin: *');
+        $doi = $doi_prefix . "/" . $doi_suffix;
+        $book = Book::where('doi', '=', $doi)->firstOrFail();
+        return response()->json($book);
+    }
+
     public function publicReport($doi_prefix, $doi_suffix, $year = null)
     {
         header('Access-Control-Allow-Origin: *');
